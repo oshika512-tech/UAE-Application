@@ -1,75 +1,70 @@
+import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:meditation_center/firebase_options.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:meditation_center/data/firebase/firebase_options.dart';
+import 'package:meditation_center/core/routing/app.routing.dart';
+import 'package:meditation_center/core/theme/app.theme.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:meditation_center/data/services/animation.services.dart';
+import 'package:meditation_center/providers/user.provider.dart';
+import 'package:provider/provider.dart';
 
+ var cloudinary = Cloudinary.fromStringUrl(
+    'cloudinary://471975712971444:HKHhCHpS3mPOXPfEK2Ag0W-9ygE@dwwhwh1s4'
+  );
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+ cloudinary.config.urlConfig.secure = true;
+ 
+  runApp(
+    DevicePreview(
+      enabled: false,
+      builder: (context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+        ],
+        child: MyApp(),
+      ),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+class _MyAppState extends State<MyApp> {
+  int durationVal = 1;
+  Future<int> getDuration() async {
+    final val = await AnimationServices().getAnimationDuration();
     setState(() {
-      _counter++;
+      durationVal = val;
     });
+    return val;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDuration();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+    return MaterialApp.router(
+      title: 'Mediation Center',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      routerConfig: AppRouting(duration: durationVal).appRouter,
+      builder: EasyLoading.init(),
     );
   }
 }
