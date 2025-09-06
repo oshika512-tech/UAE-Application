@@ -1,1 +1,1 @@
-{"flutter":{"platforms":{"dart":{"lib/firebase_options.dart":{"projectId":"meditation-center-44aad","configurations":{"ios":"1:282843198069:ios:7b69f12533a0439b587e3c"}}}}}}
+{"flutter":{"platforms":{"dart":{"lib/firebase_options.dart":{"projectId":"meditation-center-44aad","configurations":{"android":"1:282843198069:android:e9807c7d41ea72d1587e3c"}}},"android":{"default":{"projectId":"meditation-center-44aad","appId":"1:282843198069:android:e9807c7d41ea72d1587e3c","fileOutput":"android/app/google-services.json"}}}}}
