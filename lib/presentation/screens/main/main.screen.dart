@@ -48,9 +48,18 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  validateUser() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      context.push('/login');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    // validate User
+    validateUser();
     // checkUser status
     checkUser();
   }
