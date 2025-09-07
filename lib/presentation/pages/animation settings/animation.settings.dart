@@ -148,14 +148,17 @@ Future<void> getDuration() async {
             IntroductionText.text(
               theme,
               "Animation duration must be a value between 1 and 10",
+              false,
             ),
             IntroductionText.text(
               theme,
               "Use the arrow keys to change the value.",
+              false,
             ),
             IntroductionText.text(
               theme,
               "Refresh the app to enjoy the new animation experience.",
+              false,
             ),
             Spacer(),
             Center(

@@ -3,6 +3,7 @@ import 'package:meditation_center/presentation/components/app.buttons.dart';
 
 class PopupWindow {
   static void conformImageUploadPopup(
+    String title,
     BuildContext context,
     VoidCallback onConfirm,
   ) {
@@ -13,7 +14,7 @@ class PopupWindow {
         content: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Text(
-            'Conform to upload image',
+           title,
             style: theme.textTheme.bodyMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),

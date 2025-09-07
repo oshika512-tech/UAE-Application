@@ -24,7 +24,7 @@ class AccountSettings extends StatefulWidget {
 
 class _AccountSettingsState extends State<AccountSettings> {
   final ImagePicker _picker = ImagePicker();
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   Future<void> _pickImageFromGallery() async {
     final XFile? pickedFile = await _picker.pickImage(
@@ -39,6 +39,7 @@ class _AccountSettingsState extends State<AccountSettings> {
 // conform uploading
   conform(XFile imagePath) {
     return PopupWindow.conformImageUploadPopup(
+      "Conform to upload image",
       context,
       () async {
         context.pop();
@@ -176,10 +177,12 @@ class _AccountSettingsState extends State<AccountSettings> {
                     IntroductionText.text(
                       theme,
                       "Click on the camera icon to change your profile picture",
+                      false,
                     ),
                     IntroductionText.text(
                       theme,
                       "Then select the image you want to use as your profile picture",
+                      false,
                     ),
                     Spacer(),
                     Center(
