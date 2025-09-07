@@ -83,15 +83,12 @@ class AuthServices {
   }
   // google authentication
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
     if (googleUser == null) {
-      throw FirebaseAuthException(
-        code: 'ERROR_ABORTED_BY_USER',
-        message: 'Sign in aborted by user',
-      );
+      return false;
     }
 
     final GoogleSignInAuthentication googleAuth =
@@ -102,7 +99,12 @@ class AuthServices {
       idToken: googleAuth.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final data = await FirebaseAuth.instance.signInWithCredential(credential);
+    if (data.user != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // sing out

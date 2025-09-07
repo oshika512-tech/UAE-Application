@@ -34,13 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // continue login
     if (!isEPassError && !isEmailError) {
-      
       if (AuthServices.isValidEmail(emailController.text)) {
         LoadingPopup.show('Logging...');
         final result = await AuthServices.signInWithEmail(
             emailController.text, passwordController.text);
 
-              if (!mounted) return;
+        if (!mounted) return;
 
         if (result == 'errCode1') {
           AppTopSnackbar.showTopSnackBar(context, "User not found");
@@ -49,8 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           AppTopSnackbar.showTopSnackBar(context, "Wrong password");
           EasyLoading.dismiss();
         } else if (result == 'Something went wrong') {
-          AppTopSnackbar.showTopSnackBar(
-              context, "invalid email or password");
+          AppTopSnackbar.showTopSnackBar(context, "invalid email or password");
           EasyLoading.dismiss();
         } else if (result == 'Successfully') {
           context.pushReplacement(
@@ -186,19 +184,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            // google login btn
                             GestureDetector(
-                                onTap: () async {
-                                  LoadingPopup.show('Logging...');
-                                  final status =
-                                      await AuthServices().signInWithGoogle();
-                                  if (status.user!.uid != '') {
-                                    context.pushReplacement('/main');
-                                    EasyLoading.dismiss();
-                                  }
-                                },
-                                child: _socialIcon(
-                                    "assets/icons/google.png", 40, 40)),
+                              onTap: () async {
+                                LoadingPopup.show('Logging...');
+                                final status =
+                                    await AuthServices().signInWithGoogle();
+                                if (status) {
+                                  context.go('/main');
+                                  EasyLoading.dismiss();
+                                } else {
+                                  EasyLoading.dismiss();
+                                }
+                              },
+                              child: _socialIcon(
+                                  "assets/icons/google.png", 40, 40),
+                            ),
                             SizedBox(width: 5),
+                            // facebook login btn
                             _socialIcon("assets/icons/facebook.png", 40, 40),
                           ],
                         ),

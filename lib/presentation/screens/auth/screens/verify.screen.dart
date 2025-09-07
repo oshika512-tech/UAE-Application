@@ -19,7 +19,7 @@ class VerifyScreen extends StatelessWidget {
 
       final result = await AuthServices.isEmailVerified();
       if (result) {
-        context.pushReplacement('/main');
+        context.go('/main');
         EasyLoading.dismiss();
         EasyLoading.showSuccess('Verified !', duration: Duration(seconds: 2));
       } else {

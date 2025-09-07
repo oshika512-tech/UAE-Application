@@ -22,11 +22,16 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isSwitch = false;
 
-  logOut() {
+  logOut() async {
     LoadingPopup.show('Logging out...');
     AuthServices.logOut();
-    context.pushReplacement('/login');
+    await FirebaseAuth.instance.signOut();
+    if (!mounted) return;
+    context.goNamed(
+    'login', 
+  );
     EasyLoading.dismiss();
+    EasyLoading.showSuccess('Logged out successfully!');
   }
 
   @override
@@ -102,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 UserCard(
                                   imageUrl: user.profileImage,
                                   isEdit: false,
-                                  selectImage: (){},
+                                  selectImage: () {},
                                 ),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
@@ -154,9 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Icons.animation,
                                   "Animation",
                                   "Change duration",
-                                  
                                   () {
-                                     context.push('/animation_settings');
+                                    context.push('/animation_settings');
                                   },
                                 ),
                                 _items(
@@ -167,11 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     logOut();
                                   },
                                 ),
-
-                                 
                                 Spacer(),
-
-                               
                                 Text(
                                   AppData.appVersion,
                                   style: Theme.of(context)
