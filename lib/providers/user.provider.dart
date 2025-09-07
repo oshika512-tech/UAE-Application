@@ -59,7 +59,7 @@ class UserProvider extends ChangeNotifier {
         // new profile image url
         final profileImage = response?.data?.secureUrl;
         // update user collection
-        final uploadStatus = await updateUser(
+        final updateUserData = await updateUser(
           UserModel(
             name: currentUser.name,
             email: currentUser.email,
@@ -69,7 +69,7 @@ class UserProvider extends ChangeNotifier {
           ),
         );
 
-        if (uploadStatus) {
+        if (updateUserData) {
           return true;
         } else {
           debugPrint("image uploaded but unable to update user");
@@ -86,4 +86,25 @@ class UserProvider extends ChangeNotifier {
     }
     return false;
   }
+
+
+  // update user name
+  Future<bool> updateUserName(String newName) async {
+  final docRef = _firestore.collection('users').doc(
+        FirebaseAuth.instance.currentUser!.uid,
+      );
+
+  try {
+    await docRef.update({
+      'name': newName,  
+    });
+    notifyListeners();
+    return true;
+  } catch (e) {
+    notifyListeners();
+    print('Error updating name: $e');
+    return false;
+  }
+}
+
 }

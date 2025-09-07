@@ -24,6 +24,7 @@ class AccountSettings extends StatefulWidget {
 
 class _AccountSettingsState extends State<AccountSettings> {
   final ImagePicker _picker = ImagePicker();
+  TextEditingController _nameController = TextEditingController();
 
   Future<void> _pickImageFromGallery() async {
     final XFile? pickedFile = await _picker.pickImage(
@@ -53,6 +54,7 @@ class _AccountSettingsState extends State<AccountSettings> {
           context,
           currentUser,
         );
+
         if (status) {
           EasyLoading.dismiss();
           EasyLoading.showSuccess('Successfully !',
@@ -65,12 +67,33 @@ class _AccountSettingsState extends State<AccountSettings> {
     );
   }
 
+  // change user name function
+  changeName() async {
+    if (_nameController.text.isEmpty) {
+      AppTopSnackbar.showTopSnackBar(context, "Name cannot be empty");
+      return;
+    } else {
+      LoadingPopup.show('Updating...');
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final updateStatus =
+          await userProvider.updateUserName(_nameController.text);
+      if (updateStatus) {
+        EasyLoading.dismiss();
+        EasyLoading.showSuccess('Successfully !',
+            duration: Duration(seconds: 2));
+      } else {
+        EasyLoading.dismiss();
+        EasyLoading.showError('Failed !', duration: Duration(seconds: 2));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-       resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
         backgroundColor: AppColors.primaryColor,
@@ -132,6 +155,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                     ),
                     SizedBox(height: height * 0.02),
                     AppInput(
+                      controller: _nameController,
                       hintText: cUser.name,
                       prefixIcon: Icons.person,
                       suffixIcon: Icons.cancel_sharp,
@@ -143,6 +167,10 @@ class _AccountSettingsState extends State<AccountSettings> {
                       text: "Changes my name",
                       icon: Icons.change_circle,
                       isPrimary: false,
+                      onTap: () {
+                        // change name function
+                        changeName();
+                      },
                     ),
                     SizedBox(height: height * 0.05),
                     IntroductionText.text(
