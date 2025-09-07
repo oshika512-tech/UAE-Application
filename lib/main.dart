@@ -7,6 +7,7 @@ import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:meditation_center/data/services/animation.services.dart';
+import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,7 @@ void main() async {
       builder: (context) => MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => PostProvider()),
         ],
         child: MyApp(),
       ),

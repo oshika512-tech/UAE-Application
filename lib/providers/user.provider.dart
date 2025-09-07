@@ -10,8 +10,8 @@ import 'package:meditation_center/main.dart';
 import 'package:cloudinary_api/src/request/model/uploader_params.dart';
 
 class UserProvider extends ChangeNotifier {
-  // update user
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // update user
   Future<bool> updateUser(UserModel user) async {
     final docRef = _firestore.collection('users').doc(
           FirebaseAuth.instance.currentUser!.uid,
