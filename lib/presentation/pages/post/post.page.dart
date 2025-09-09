@@ -52,7 +52,7 @@ class _PostPageState extends State<PostPage> {
       () async {
         context.pop();
         final userProvider = Provider.of<PostProvider>(context, listen: false);
-        LoadingPopup.show('Uploading...');
+        // LoadingPopup.show('Uploading...');
         //  process to upload images
 
         final postStatus = await userProvider.createNewPost(
@@ -62,9 +62,9 @@ class _PostPageState extends State<PostPage> {
         );
 
         if (postStatus) {
-          EasyLoading.dismiss();
-          EasyLoading.showSuccess('Successfully !',
-              duration: Duration(seconds: 2));
+          // EasyLoading.dismiss();
+          // EasyLoading.showSuccess('Successfully !',
+          //     duration: Duration(seconds: 2));
 
           setState(() {
             imageList.clear();
@@ -109,7 +109,10 @@ class _PostPageState extends State<PostPage> {
               return Column(
                 children: [
                   const SizedBox(height: 20),
-                  _textFormField(context, descriptionController),
+                  _textFormField(
+                    context,
+                    descriptionController,
+                  ),
                   const SizedBox(height: 20),
                   // pick image btn
                   Row(
@@ -151,7 +154,29 @@ class _PostPageState extends State<PostPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                 imageList.isNotEmpty? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Selected:  ${imageList.length}",
+                            style: Theme.of(context).textTheme.bodySmall),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              imageList.clear();
+                            });
+                          },
+                          child: Text(
+                            "Clear",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        )
+                      ],
+                    ),
+                  ): const SizedBox.shrink(),
+                  const SizedBox(height: 10),
                   imageList.isNotEmpty
                       ? Expanded(
                           child: SingleChildScrollView(
@@ -183,32 +208,33 @@ class _PostPageState extends State<PostPage> {
                             ),
                           ),
                         )
-                      : Column(
-                          children: [
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.05),
-                            IntroductionText.text(
-                              theme,
-                              "Click on the select images button to select an image",
-                              true,
+                      : Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                IntroductionText.text(
+                                  theme,
+                                  "Click on the select images button to select an image",
+                                  true,
+                                ),
+                                IntroductionText.text(
+                                  theme,
+                                  "You can select multiple images at once",
+                                  true,
+                                ),
+                                IntroductionText.text(
+                                  theme,
+                                  "After selecting images, you can delete any image by clicking on the delete icon",
+                                  true,
+                                ),
+                                IntroductionText.text(
+                                  theme,
+                                  "Add description about your post in the description field",
+                                  true,
+                                ),
+                              ],
                             ),
-                            IntroductionText.text(
-                              theme,
-                              "You can select multiple images at once",
-                              true,
-                            ),
-                            IntroductionText.text(
-                              theme,
-                              "After selecting images, you can delete any image by clicking on the delete icon",
-                              true,
-                            ),
-                            IntroductionText.text(
-                              theme,
-                              "Add description about your post in the description field",
-                              true,
-                            ),
-                          ],
+                          ),
                         ),
                 ],
               );
@@ -250,10 +276,12 @@ class _PostPageState extends State<PostPage> {
   }
 
   Widget _textFormField(
-      BuildContext context, TextEditingController Controller) {
+    BuildContext context,
+    TextEditingController controller,
+  ) {
     return TextFormField(
       autofocus: false,
-      controller: Controller,
+      controller: controller,
       style: Theme.of(context).textTheme.bodySmall,
       maxLines: 5,
       decoration: InputDecoration(
