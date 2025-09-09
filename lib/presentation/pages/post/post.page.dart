@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -27,6 +26,7 @@ class _PostPageState extends State<PostPage> {
   final ImagePicker picker = ImagePicker();
   List<XFile> imageList = [];
   final TextEditingController descriptionController = TextEditingController();
+  bool isEnabled = true;
 
   // pick multiple images from gallery
   Future<void> _pickImagesFromGallery() async {
@@ -36,8 +36,6 @@ class _PostPageState extends State<PostPage> {
       setState(() {
         imageList.addAll(pickedFiles);
       });
-    } else {
-      print('No images selected.');
     }
   }
 
@@ -52,7 +50,7 @@ class _PostPageState extends State<PostPage> {
       () async {
         context.pop();
         final userProvider = Provider.of<PostProvider>(context, listen: false);
-        // LoadingPopup.show('Uploading...');
+        LoadingPopup.show('Uploading...');
         //  process to upload images
 
         final postStatus = await userProvider.createNewPost(
@@ -62,17 +60,20 @@ class _PostPageState extends State<PostPage> {
         );
 
         if (postStatus) {
-          // EasyLoading.dismiss();
-          // EasyLoading.showSuccess('Successfully !',
-          //     duration: Duration(seconds: 2));
+          EasyLoading.dismiss();
+          EasyLoading.showSuccess('Successfully !',
+              duration: Duration(seconds: 2));
 
           setState(() {
             imageList.clear();
             descriptionController.text = "";
+            isEnabled = true;
           });
         } else {
           EasyLoading.dismiss();
           AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+          isEnabled = true;
+          setState(() {});
         }
       },
     );
@@ -112,17 +113,18 @@ class _PostPageState extends State<PostPage> {
                   _textFormField(
                     context,
                     descriptionController,
+                    isEnabled,
                   ),
                   const SizedBox(height: 20),
                   // pick image btn
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       AppButtons(
                         text: "Select",
                         isPrimary: true,
                         icon: Icons.image,
-                        width: MediaQuery.of(context).size.width * 0.42,
+                        width: MediaQuery.of(context).size.width * 0.44,
                         height: 50,
                         onTap: _pickImagesFromGallery,
                       ),
@@ -130,10 +132,13 @@ class _PostPageState extends State<PostPage> {
                         text: "Upload",
                         isPrimary: true,
                         icon: Icons.upload,
-                        width: MediaQuery.of(context).size.width * 0.42,
+                        width: MediaQuery.of(context).size.width * 0.44,
                         height: 50,
                         onTap: () {
                           if (imageList.isNotEmpty) {
+                            setState(() {
+                              isEnabled = false;
+                            });
                             if (descriptionController.text.isEmpty) {
                               continueUpload(
                                   "Conform to upload images without description ?",
@@ -155,27 +160,29 @@ class _PostPageState extends State<PostPage> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                 imageList.isNotEmpty? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Selected:  ${imageList.length}",
-                            style: Theme.of(context).textTheme.bodySmall),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              imageList.clear();
-                            });
-                          },
-                          child: Text(
-                            "Clear",
-                            style: Theme.of(context).textTheme.bodySmall,
+                  imageList.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Selected:  ${imageList.length}",
+                                  style: Theme.of(context).textTheme.bodySmall),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    imageList.clear();
+                                  });
+                                },
+                                child: Text(
+                                  "Clear",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ),
+                            ],
                           ),
                         )
-                      ],
-                    ),
-                  ): const SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                   const SizedBox(height: 10),
                   imageList.isNotEmpty
                       ? Expanded(
@@ -278,9 +285,11 @@ class _PostPageState extends State<PostPage> {
   Widget _textFormField(
     BuildContext context,
     TextEditingController controller,
+    bool isEnabled,
   ) {
     return TextFormField(
       autofocus: false,
+      enabled: isEnabled,
       controller: controller,
       style: Theme.of(context).textTheme.bodySmall,
       maxLines: 5,
