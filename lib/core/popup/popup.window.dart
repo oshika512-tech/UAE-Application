@@ -6,6 +6,7 @@ class PopupWindow {
     String title,
     BuildContext context,
     VoidCallback onConfirm,
+    VoidCallback onCancel,
   ) {
     final theme = Theme.of(context);
     showDialog(
@@ -22,9 +23,7 @@ class PopupWindow {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: onCancel,
             child: Text('Cancel', style: theme.textTheme.bodyMedium),
           ),
           AppButtons(

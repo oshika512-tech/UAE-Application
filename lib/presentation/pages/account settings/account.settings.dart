@@ -65,6 +65,9 @@ class _AccountSettingsState extends State<AccountSettings> {
           AppTopSnackbar.showTopSnackBar(context, "Upload failed !");
         }
       },
+      (){
+        context.pop();
+      }
     );
   }
 

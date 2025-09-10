@@ -44,39 +44,39 @@ class _PostPageState extends State<PostPage> {
     String userName,
     List<XFile> images,
   ) {
-    PopupWindow.conformImageUploadPopup(
-      text,
-      context,
-      () async {
-        context.pop();
-        final userProvider = Provider.of<PostProvider>(context, listen: false);
-        LoadingPopup.show('Uploading...');
-        //  process to upload images
+    PopupWindow.conformImageUploadPopup(text, context, () async {
+      context.pop();
+      final postProvider = Provider.of<PostProvider>(context, listen: false);
+      LoadingPopup.show('Uploading...');
+      //  process to upload images
 
-        final postStatus = await userProvider.createNewPost(
-          descriptionController.text,
-          userName,
-          images,
-        );
+      final postStatus = await postProvider.createNewPost(
+        descriptionController.text,
+        userName,
+        images,
+      );
 
-        if (postStatus) {
-          EasyLoading.dismiss();
-          EasyLoading.showSuccess('Successfully !',
-              duration: Duration(seconds: 2));
+      if (postStatus) {
+        EasyLoading.dismiss();
+        EasyLoading.showSuccess('Successfully !',
+            duration: Duration(seconds: 2));
 
-          setState(() {
-            imageList.clear();
-            descriptionController.text = "";
-            isEnabled = true;
-          });
-        } else {
-          EasyLoading.dismiss();
-          AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+        setState(() {
+          imageList.clear();
+          descriptionController.text = "";
           isEnabled = true;
-          setState(() {});
-        }
-      },
-    );
+        });
+      } else {
+        EasyLoading.dismiss();
+        AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+        isEnabled = true;
+        setState(() {});
+      }
+    }, () {
+      context.pop();
+      isEnabled = true;
+      setState(() {});
+    });
   }
 
   @override
