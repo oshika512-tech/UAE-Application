@@ -55,5 +55,15 @@
 			</array>
 		</dict>
 	</array>
+
+	<key>UIBackgroundModes</key>
+	<array>
+	<string>fetch</string>
+	<string>remote-notification</string>
+	</array>
+
+	<key>NSUserNotificationUsageDescription</key>
+	<string>We would like to send you notifications</string>
+
 </dict>
 </plist>

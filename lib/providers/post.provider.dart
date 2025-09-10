@@ -3,6 +3,7 @@ import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meditation_center/core/notifications/create.notification.dart';
 import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/post.model.dart';
 
@@ -49,6 +50,15 @@ class PostProvider extends ChangeNotifier {
       }
       // update post with image urls
       await docRef.update({'images': cloudinaryUrlList});
+
+      // show notification
+      CreateNotification.showNotification(
+        "Successfully uploaded ",
+        des != ""
+            ? des
+            : "Your post is uploaded successfully!, Thank you for sharing your moments with us.",
+        docRef.id.hashCode,
+      );
 
       notifyListeners();
       return true;

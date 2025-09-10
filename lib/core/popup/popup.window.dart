@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_center/presentation/components/app.buttons.dart';
-
+import 'package:meditation_center/core/theme/app.colors.dart';
+ 
 class PopupWindow {
   static void conformImageUploadPopup(
     String title,
@@ -10,32 +10,58 @@ class PopupWindow {
   ) {
     final theme = Theme.of(context);
     showDialog(
+      barrierDismissible: false,
       context: context,
-      builder: (context) => AlertDialog(
-        content: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Text(
-           title,
-            style: theme.textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: onCancel,
-            child: Text('Cancel', style: theme.textTheme.bodyMedium),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+               
+               
+
+              const SizedBox(height: 20),
+              Text(
+                title,
+                style: theme.textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: onCancel,
+                    child: Text(
+                      "No, Cancel",
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 20,
+                    color: AppColors.gray,
+                  ),
+                  TextButton(
+                    onPressed: onConfirm,
+                    child: Text(
+                      "Yes, Upload",
+                      style: theme.textTheme.bodySmall 
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
-          AppButtons(
-            onTap: onConfirm,
-            text: "Upload",
-            isPrimary: true,
-            icon: Icons.upload,
-            height: 40,
-            width: MediaQuery.of(context).size.width * 0.3,
-          ),
-        ],
-      ),
+
+           
+        );
+      },
     );
   }
 }

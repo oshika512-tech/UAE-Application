@@ -51,7 +51,7 @@ class _PostPageState extends State<PostPage> {
       // LoadingPopup.show('Uploading...');
       showDialog(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return const PostUploadUi();
         },
@@ -66,8 +66,6 @@ class _PostPageState extends State<PostPage> {
 
       if (postStatus) {
         // EasyLoading.dismiss();
-        EasyLoading.showSuccess('Successfully !',
-            duration: Duration(seconds: 2));
 
         setState(() {
           imageList.clear();
@@ -146,18 +144,11 @@ class _PostPageState extends State<PostPage> {
                             setState(() {
                               isEnabled = false;
                             });
-                            if (descriptionController.text.isEmpty) {
-                              continueUpload(
-                                  "Conform to upload images without description ?",
-                                  user.name,
-                                  imageList);
-                            } else {
-                              continueUpload(
-                                "Conform to upload images ?",
+
+                            continueUpload(
+                                " This action cannot be undone. Are you sure you want to continue?",
                                 user.name,
-                                imageList,
-                              );
-                            }
+                                imageList);
                           } else {
                             AppTopSnackbar.showTopSnackBar(
                                 context, "Please select images to upload");
