@@ -1,16 +1,16 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/post.model.dart';
-import 'package:cloudinary_api/src/request/model/uploader_params.dart';
-import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
-import 'package:meditation_center/main.dart';
 
 class PostProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  double uploadProgress = 0;
 
   // create new post
   Future<bool> createNewPost(
@@ -32,7 +32,8 @@ class PostProvider extends ChangeNotifier {
       // create dummy post
       await docRef.set({...post.toJson()});
       // upload images to cloudinary
-      List<String> cloudinaryUrlList = await uploadImages(imageList, userId,docRef.id);
+      List<String> cloudinaryUrlList =
+          await uploadImages(imageList, userId, docRef.id);
       if (cloudinaryUrlList.isEmpty) {
         return false;
       }
@@ -47,45 +48,54 @@ class PostProvider extends ChangeNotifier {
     }
   }
 
-  // (cloudinary) upload function
   Future<List<String>> uploadImages(
     List<XFile> imageList,
     String userID,
     String postsID,
-
   ) async {
     List<String> uploadedUrls = [];
 
     try {
-      for (int i = 0; i < imageList.length; i++) {
-        final file = File(imageList[i].path);
+      // CloudinaryUploadResource list   create
+      final resources = await Future.wait(
+        imageList.asMap().entries.map((entry) async {
+          int index = entry.key;
+          XFile file = entry.value;
 
-        // Upload to Cloudinary
-        var response = await cloudinary.uploader().upload(
-              file,
-              params: UploadParams(
-                publicId:
-                    "${userID}_${DateTime.now().millisecondsSinceEpoch}_$i",
-                uniqueFilename: false,
-                overwrite: true,
-                folder: "posts/$postsID",
-              ),
-            );
+          return CloudinaryUploadResource(
+            filePath: file.path,
+            resourceType: CloudinaryResourceType.image,
+            folder: "posts/$postsID",
+            fileName:
+                "${userID}_${DateTime.now().millisecondsSinceEpoch}_$index",
+            // upload percentage
+            progressCallback: (count, total) {
+              int percent = ((count / total) * 100).round();
+              uploadProgress = percent.toDouble();
+              notifyListeners();
+            },
+          );
+        }),
+      );
 
-        final secureUrl = response?.data?.secureUrl;
+      // Upload resources
+      List<CloudinaryResponse> responses =
+          await CloudinarySdk.cloudinary.uploadResources(resources);
 
-        if (secureUrl != null) {
-          debugPrint("Uploaded: $secureUrl");
-          uploadedUrls.add(secureUrl); // Add uploaded image URL to list
+      // Handle responses
+      for (var response in responses) {
+        if (response.isSuccessful) {
+          debugPrint(" Uploaded: ${response.secureUrl}");
+          uploadedUrls.add(response.secureUrl!);
         } else {
-          debugPrint("Upload failed for image $i");
+          debugPrint(" Failed: ${response.error}");
         }
       }
     } catch (e) {
-      debugPrint("Upload failed: $e");
+      debugPrint(" Upload failed: $e");
       return [];
     }
 
-    return uploadedUrls; // Return all uploaded image URLs
+    return uploadedUrls;
   }
 }

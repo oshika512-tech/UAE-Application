@@ -84,7 +84,7 @@ class _PostPageState extends State<PostPage> {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Consumer<UserProvider>(
+      child: Consumer(
         builder: (
           BuildContext context,
           UserProvider userProvider,

@@ -1,5 +1,4 @@
-import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:firebase_core/firebase_core.dart';
+ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:meditation_center/data/firebase/firebase_options.dart';
@@ -11,16 +10,16 @@ import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
 
- var cloudinary = Cloudinary.fromStringUrl(
-    'cloudinary://471975712971444:HKHhCHpS3mPOXPfEK2Ag0W-9ygE@dwwhwh1s4'
-  );
+//  var cloudinary = Cloudinary.fromStringUrl(
+//     'cloudinary://471975712971444:HKHhCHpS3mPOXPfEK2Ag0W-9ygE@dwwhwh1s4'
+//   );
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
- cloudinary.config.urlConfig.secure = true;
+//  cloudinary.config.urlConfig.secure = true;
  
   runApp(
     DevicePreview(

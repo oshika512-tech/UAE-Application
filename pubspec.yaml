@@ -49,8 +49,9 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_dotenv: ^5.2.1
   image_picker: ^1.1.2
-  cloudinary_api: ^1.1.1
-  cloudinary_url_gen: ^1.8.0
+  # cloudinary_api: ^1.1.1
+  # cloudinary_url_gen: ^1.8.0
+  cloudinary_sdk: ^5.0.0+1
 
 dev_dependencies:
   flutter_test:

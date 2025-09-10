@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
+import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/user.model.dart';
-import 'package:meditation_center/main.dart';
-import 'package:cloudinary_api/src/request/model/uploader_params.dart';
 
 class UserProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -35,7 +32,7 @@ class UserProvider extends ChangeNotifier {
     return UserModel.fromJson(snapshot.data()!);
   }
 
-//upload User Profile Image
+// cloudinary upload image
   Future<bool> uploadUserProfileImage(
     XFile imagePath,
     String userID,
@@ -43,22 +40,23 @@ class UserProvider extends ChangeNotifier {
     UserModel currentUser,
   ) async {
     try {
-      final File file = File(imagePath.path);
-      var response = await cloudinary.uploader().upload(
-            file,
-            params: UploadParams(
-              publicId: userID,
-              uniqueFilename: false,
-              overwrite: true,
-              folder: "users",
-            ),
-          );
+      final response = await CloudinarySdk.cloudinary.uploadResource(
+        CloudinaryUploadResource(
+          filePath: imagePath.path,
+          resourceType: CloudinaryResourceType.image,
+          folder: "users",
+          fileName: userID,
+          progressCallback: (count, total) {
+            debugPrint("Uploading... $count/$total");
+          },
+        ),
+      );
 
-      debugPrint("Secure URL: ${response?.data?.secureUrl}");
-      if (response?.data?.secureUrl != null) {
-        // new profile image url
-        final profileImage = response?.data?.secureUrl;
-        // update user collection
+      if (response.isSuccessful) {
+        debugPrint(" Uploaded successfully: ${response.secureUrl}");
+
+        // update your user model with new image
+        final profileImage = response.secureUrl;
         final updateUserData = await updateUser(
           UserModel(
             name: currentUser.name,
@@ -72,39 +70,35 @@ class UserProvider extends ChangeNotifier {
         if (updateUserData) {
           return true;
         } else {
-          debugPrint("image uploaded but unable to update user");
-
-          //TODO:delete image from cloudinary
+          debugPrint(" Uploaded but update user failed");
           return false;
         }
       } else {
-        debugPrint("Upload failed");
+        debugPrint(" Upload failed: ${response.error}");
+        return false;
       }
     } catch (e) {
-      debugPrint("Upload uploading and update user/ failed: $e");
+      debugPrint(" Exception: $e");
       return false;
     }
-    return false;
   }
-
 
   // update user name
   Future<bool> updateUserName(String newName) async {
-  final docRef = _firestore.collection('users').doc(
-        FirebaseAuth.instance.currentUser!.uid,
-      );
+    final docRef = _firestore.collection('users').doc(
+          FirebaseAuth.instance.currentUser!.uid,
+        );
 
-  try {
-    await docRef.update({
-      'name': newName,  
-    });
-    notifyListeners();
-    return true;
-  } catch (e) {
-    notifyListeners();
-    print('Error updating name: $e');
-    return false;
+    try {
+      await docRef.update({
+        'name': newName,
+      });
+      notifyListeners();
+      return true;
+    } catch (e) {
+      notifyListeners();
+      print('Error updating name: $e');
+      return false;
+    }
   }
-}
-
 }
