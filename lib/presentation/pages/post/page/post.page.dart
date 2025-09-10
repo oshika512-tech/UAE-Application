@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,8 +8,10 @@ import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/components/app.buttons.dart';
-import 'package:meditation_center/core/theme/app.colors.dart';
-import 'package:meditation_center/presentation/components/introduction.text.dart';
+import 'package:meditation_center/presentation/pages/post/widgets/post_upload_ui.dart';
+import 'package:meditation_center/presentation/pages/post/widgets/bottom.text.dart';
+import 'package:meditation_center/presentation/pages/post/widgets/image.card.dart';
+import 'package:meditation_center/presentation/pages/post/widgets/text.input.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,14 @@ class _PostPageState extends State<PostPage> {
     PopupWindow.conformImageUploadPopup(text, context, () async {
       context.pop();
       final postProvider = Provider.of<PostProvider>(context, listen: false);
-      LoadingPopup.show('Uploading...');
+      // LoadingPopup.show('Uploading...');
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return const PostUploadUi();
+        },
+      );
       //  process to upload images
 
       final postStatus = await postProvider.createNewPost(
@@ -57,7 +65,7 @@ class _PostPageState extends State<PostPage> {
       );
 
       if (postStatus) {
-        EasyLoading.dismiss();
+        // EasyLoading.dismiss();
         EasyLoading.showSuccess('Successfully !',
             duration: Duration(seconds: 2));
 
@@ -67,7 +75,7 @@ class _PostPageState extends State<PostPage> {
           isEnabled = true;
         });
       } else {
-        EasyLoading.dismiss();
+        // EasyLoading.dismiss();
         AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
         isEnabled = true;
         setState(() {});
@@ -81,7 +89,6 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Consumer(
@@ -110,7 +117,7 @@ class _PostPageState extends State<PostPage> {
               return Column(
                 children: [
                   const SizedBox(height: 20),
-                  _textFormField(
+                  TextInput.textFormField(
                     context,
                     descriptionController,
                     isEnabled,
@@ -202,7 +209,7 @@ class _PostPageState extends State<PostPage> {
                                 //  images preview
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: _imageCard(
+                                  child: ImageCard.imageCard(
                                     imageList[index].path,
                                     () {
                                       setState(() {
@@ -215,109 +222,13 @@ class _PostPageState extends State<PostPage> {
                             ),
                           ),
                         )
-                      : Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                IntroductionText.text(
-                                  theme,
-                                  "Click on the select images button to select an image",
-                                  true,
-                                ),
-                                IntroductionText.text(
-                                  theme,
-                                  "You can select multiple images at once",
-                                  true,
-                                ),
-                                IntroductionText.text(
-                                  theme,
-                                  "After selecting images, you can delete any image by clicking on the delete icon",
-                                  true,
-                                ),
-                                IntroductionText.text(
-                                  theme,
-                                  "Add description about your post in the description field",
-                                  true,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      : BottomText(),
                 ],
               );
             } else {
               return const SizedBox.shrink();
             }
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _imageCard(
-    String imageUrl,
-    VoidCallback deleteImage,
-  ) {
-    return Stack(
-      children: [
-        Center(
-          child: Image.file(
-            File(imageUrl),
-            fit: BoxFit.cover,
-          ),
-        ),
-        Container(
-          color: AppColors.textColor.withOpacity(0.5),
-          child: Center(
-            child: IconButton(
-              onPressed: deleteImage,
-              icon: Icon(
-                Icons.delete,
-                color: AppColors.whiteColor,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _textFormField(
-    BuildContext context,
-    TextEditingController controller,
-    bool isEnabled,
-  ) {
-    return TextFormField(
-      autofocus: false,
-      enabled: isEnabled,
-      controller: controller,
-      style: Theme.of(context).textTheme.bodySmall,
-      maxLines: 5,
-      decoration: InputDecoration(
-        hintText: 'Description',
-        hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: AppColors.gray,
-            ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(
-            color: AppColors.primaryColor,
-            width: 1.5,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(
-            color: AppColors.primaryColor,
-            width: 1.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(
-            color: AppColors.primaryColor,
-            width: 1.5,
-          ),
         ),
       ),
     );

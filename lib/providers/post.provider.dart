@@ -10,14 +10,20 @@ class PostProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
-  double uploadProgress = 0;
+  double uploadProgress = 0.0;
+  double totalUpload = 0.0;
+  bool isDone = false;
 
   // create new post
+
   Future<bool> createNewPost(
     String des,
     String name,
     List<XFile> imageList,
   ) async {
+    // reset upload progress
+    isDone = false;
+    uploadProgress = 0.0;
     final docRef = _firestore.collection('posts').doc();
 
     final post = PostModel(
@@ -31,6 +37,10 @@ class PostProvider extends ChangeNotifier {
     try {
       // create dummy post
       await docRef.set({...post.toJson()});
+
+      uploadProgress = 0.0;
+      notifyListeners();
+
       // upload images to cloudinary
       List<String> cloudinaryUrlList =
           await uploadImages(imageList, userId, docRef.id);
@@ -39,6 +49,7 @@ class PostProvider extends ChangeNotifier {
       }
       // update post with image urls
       await docRef.update({'images': cloudinaryUrlList});
+
       notifyListeners();
       return true;
     } catch (e) {
@@ -56,9 +67,16 @@ class PostProvider extends ChangeNotifier {
     List<String> uploadedUrls = [];
 
     try {
-      // CloudinaryUploadResource list   create
-      final resources = await Future.wait(
-        imageList.asMap().entries.map((entry) async {
+      uploadProgress = 0.0;
+      isDone = false; // reset when starting upload
+      notifyListeners();
+
+      int totalFiles = imageList.length;
+      int completedFiles = 0;
+
+      // CloudinaryUploadResource list create
+      final resources = imageList.asMap().entries.map(
+        (entry) {
           int index = entry.key;
           XFile file = entry.value;
 
@@ -68,15 +86,20 @@ class PostProvider extends ChangeNotifier {
             folder: "posts/$postsID",
             fileName:
                 "${userID}_${DateTime.now().millisecondsSinceEpoch}_$index",
-            // upload percentage
             progressCallback: (count, total) {
-              int percent = ((count / total) * 100).round();
-              uploadProgress = percent.toDouble();
+              // one file progress
+              double fileProgress = count / total;
+
+              // overall progress
+              double overallProgress =
+                  ((completedFiles + fileProgress) / totalFiles) * 100;
+
+              uploadProgress = overallProgress;
               notifyListeners();
             },
           );
-        }),
-      );
+        },
+      ).toList();
 
       // Upload resources
       List<CloudinaryResponse> responses =
@@ -85,13 +108,21 @@ class PostProvider extends ChangeNotifier {
       // Handle responses
       for (var response in responses) {
         if (response.isSuccessful) {
-          debugPrint(" Uploaded: ${response.secureUrl}");
           uploadedUrls.add(response.secureUrl!);
-        } else {
-          debugPrint(" Failed: ${response.error}");
         }
+        completedFiles++;
+        uploadProgress = (completedFiles / totalFiles) * 100;
+        notifyListeners();
+      }
+
+      if (completedFiles == totalFiles) {
+        isDone = true;
+        notifyListeners();
       }
     } catch (e) {
+      isDone = true;
+      notifyListeners();
+
       debugPrint(" Upload failed: $e");
       return [];
     }
