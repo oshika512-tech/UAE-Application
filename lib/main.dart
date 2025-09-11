@@ -1,8 +1,8 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:meditation_center/core/theme/app.colors.dart';
+// import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/firebase/firebase_options.dart';
 import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
@@ -20,20 +20,20 @@ void main() async {
 
 
   // Initialize notifications
-  AwesomeNotifications().initialize(
-     '',
-    [
-      NotificationChannel(
-        channelKey: 'Local_channel',
-        channelName: 'Local Notifications',
-        channelDescription: 'Notification channel for Local massages',
-        defaultColor: AppColors.primaryColor,
-        ledColor: AppColors.whiteColor,
-        importance: NotificationImportance.High,
-      )
-    ],
-    debug: true
-  );
+  // AwesomeNotifications().initialize(
+  //    '',
+  //   [
+  //     NotificationChannel(
+  //       channelKey: 'Local_channel',
+  //       channelName: 'Local Notifications',
+  //       channelDescription: 'Notification channel for Local massages',
+  //       defaultColor: AppColors.primaryColor,
+  //       ledColor: AppColors.whiteColor,
+  //       importance: NotificationImportance.High,
+  //     )
+  //   ],
+  //   debug: true
+  // );
 
   runApp(
     DevicePreview(
@@ -67,11 +67,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void getNotificationPermission() async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed) {
-      // Request permission
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
+    // bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    // if (!isAllowed) {
+    //   // Request permission
+    //   AwesomeNotifications().requestPermissionToSendNotifications();
+    // }
   }
 
   @override
