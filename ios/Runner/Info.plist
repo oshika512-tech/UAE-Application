@@ -62,8 +62,11 @@
 	<string>remote-notification</string>
 	</array>
 
-	<key>NSUserNotificationUsageDescription</key>
-	<string>We would like to send you notifications</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized notifications.</string>
+	<key>UNUserNotificationAlertStyle</key>
+	<string>alert</string>
+
 
 </dict>
 </plist>
