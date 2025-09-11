@@ -51,13 +51,11 @@ class _MyAppState extends State<MyApp> {
     return val;
   }
 
-  void getNotificationPermission() async {}
-
+   
   @override
   void initState() {
     super.initState();
     getDuration();
-    getNotificationPermission();
   }
 
   @override

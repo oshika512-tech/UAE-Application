@@ -1,5 +1,5 @@
-import Flutter
 import UIKit
+import Flutter
 import flutter_local_notifications
 
 @main
@@ -9,15 +9,12 @@ import flutter_local_notifications
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
 
-    
-    FlutterLocalNotifications Plugin.setPlugin RegistrantCallback { (registry) in
-    GeneratedPlugin Registrant.register(with: registry)}
-
-
+    // Register plugins
     GeneratedPluginRegistrant.register(with: self)
 
-    if #available (iOS 10.0, *) {
-      UNUserNotification Center.current().delegate = self as? UNUserNotification CenterDelegate
+    // Setup for iOS 10+ notifications
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
