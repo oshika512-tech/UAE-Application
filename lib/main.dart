@@ -1,8 +1,7 @@
-// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-// import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/core/notifications/local.notification.dart';
 import 'package:meditation_center/data/firebase/firebase_options.dart';
 import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
@@ -18,22 +17,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
-  // Initialize notifications
-  // AwesomeNotifications().initialize(
-  //    '',
-  //   [
-  //     NotificationChannel(
-  //       channelKey: 'Local_channel',
-  //       channelName: 'Local Notifications',
-  //       channelDescription: 'Notification channel for Local massages',
-  //       defaultColor: AppColors.primaryColor,
-  //       ledColor: AppColors.whiteColor,
-  //       importance: NotificationImportance.High,
-  //     )
-  //   ],
-  //   debug: true
-  // );
+// initialize Notification
+  LocalNotification().initialize();
 
   runApp(
     DevicePreview(
@@ -66,13 +51,7 @@ class _MyAppState extends State<MyApp> {
     return val;
   }
 
-  void getNotificationPermission() async {
-    // bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    // if (!isAllowed) {
-    //   // Request permission
-    //   AwesomeNotifications().requestPermissionToSendNotifications();
-    // }
-  }
+  void getNotificationPermission() async {}
 
   @override
   void initState() {

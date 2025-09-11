@@ -1,22 +1,23 @@
-import UIKit
 import Flutter
-import awesome_notifications
-import shared_preferences_ios
+import UIKit
+import flutter_local_notifications
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+
+    
+    FlutterLocalNotifications Plugin.setPlugin RegistrantCallback { (registry) in
+    GeneratedPlugin Registrant.register(with: registry)}
+
+
     GeneratedPluginRegistrant.register(with: self)
 
-    // Background actions register කරන්න
-    SwiftAwesomeNotificationsPlugin.setPluginRegistrantCallback { registry in
-      SwiftAwesomeNotificationsPlugin.register(
-        with: registry.registrar(forPlugin: "io.flutter.plugins.awesomenotifications.AwesomeNotificationsPlugin")!)
-      FLTSharedPreferencesPlugin.register(
-        with: registry.registrar(forPlugin: "io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin")!)
+    if #available (iOS 10.0, *) {
+      UNUserNotification Center.current().delegate = self as? UNUserNotification CenterDelegate
     }
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
