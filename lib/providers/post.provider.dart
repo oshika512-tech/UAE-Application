@@ -33,6 +33,9 @@ class PostProvider extends ChangeNotifier {
       userName: name,
       dateTime: DateTime.now(),
       images: [],
+      likes: 0,
+      comments: 0,
+      comment_ids: [],
     );
 
     try {
@@ -136,5 +139,18 @@ class PostProvider extends ChangeNotifier {
     }
 
     return uploadedUrls;
+  }
+
+  // get all posts
+  Future<List<PostModel>> getAllPosts() async {
+    final querySnapshot = await _firestore.collection('posts').get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      return PostModel.fromJson({
+        ...data,
+        'dateTime': (data['dateTime'] as Timestamp).toDate(),
+      });
+    }).toList();
   }
 }
