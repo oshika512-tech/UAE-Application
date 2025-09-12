@@ -11,7 +11,7 @@ Future<void > setAnimationDuration(int duration) async {
 // get animation duration
   Future<int> getAnimationDuration() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('animationDuration') ?? 1;
+    return prefs.getInt('animationDuration') ?? 100;
   }
 
 

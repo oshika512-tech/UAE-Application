@@ -123,8 +123,8 @@ GoRoute _route(
     pageBuilder: (context, state) => CustomTransitionPage(
       key: state.pageKey,
       child: page,
-      transitionDuration: Duration(seconds: duration),
-      reverseTransitionDuration: Duration(seconds: duration),
+      transitionDuration: Duration(milliseconds: duration),
+      reverseTransitionDuration: Duration(milliseconds: duration),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         //  const begin = Offset(-1.0, 0.0);
         const end = Offset.zero;

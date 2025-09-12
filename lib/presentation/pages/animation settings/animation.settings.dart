@@ -12,7 +12,7 @@ class AnimationSettings extends StatefulWidget {
 }
 
 class _AnimationSettingsState extends State<AnimationSettings> {
-  int durationVal = 1;
+  int durationVal = 100;
 
 Future<void> getDuration() async {
   final val = await AnimationServices().getAnimationDuration();
@@ -30,16 +30,16 @@ Future<void> getDuration() async {
   }
 
   void incrementVal() {
-    if (durationVal != 10) {
-      durationVal++;
+    if (durationVal != 1000) {
+      durationVal+=100;
       saveDuration(durationVal);
       setState(() {});
     }
   }
 
   void decrementVal() {
-    if (durationVal != 0) {
-      durationVal--;
+    if (durationVal != 100) {
+      durationVal-=100;
       saveDuration(durationVal);
       setState(() {});
     }
@@ -107,7 +107,7 @@ Future<void> getDuration() async {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Seconds",
+                      "Milliseconds",
                       style: theme.textTheme.bodyMedium!
                           .copyWith(color: AppColors.whiteColor),
                     ),

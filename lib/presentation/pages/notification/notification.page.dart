@@ -17,7 +17,7 @@ class NotificationPage extends StatelessWidget {
     final cUser = FirebaseAuth.instance.currentUser!.uid;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Consumer(
         builder: (context, NotificationProvider notificationProvider, child) =>
             FutureBuilder(
@@ -63,7 +63,7 @@ class NotificationPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                   
                   ListView.builder(
                     itemCount: notifications.length,
                     shrinkWrap: true,
