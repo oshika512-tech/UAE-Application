@@ -51,11 +51,13 @@ class PostProvider extends ChangeNotifier {
       // update post with image urls
       await docRef.update({'images': cloudinaryUrlList});
 
-
       // show notification
-      LocalNotification().showNotification(docRef.id.hashCode, "Successfully uploaded", "Your post has been uploaded successfully");
+      LocalNotification().showNotification(
+        docRef.id.hashCode,
+        "Successfully uploaded",
+        "Your post has been uploaded successfully\n $des",
+      );
       notifyListeners();
-
 
       return true;
     } catch (e) {

@@ -2,19 +2,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotification {
   final notificationPlugin = FlutterLocalNotificationsPlugin();
+  bool _isInitialized = false;
 
-  final bool _isInitialized = false;
-
-  bool get isInitialized => _isInitialized;
-
-  // Initialize
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    // Android initialization
     const initAndroidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    // ios initialization
 
     const initIOSSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -22,41 +16,56 @@ class LocalNotification {
       requestSoundPermission: true,
     );
 
-    // Initialization settings for both platforms
     const initializationSettings = InitializationSettings(
       android: initAndroidSettings,
       iOS: initIOSSettings,
     );
 
-    //initialize the plugin
     await notificationPlugin.initialize(initializationSettings);
+    _isInitialized = true;  
   }
 
-  // notification details
   NotificationDetails notificationDetails() {
-    return NotificationDetails(
-      android: const AndroidNotificationDetails(
+    return const NotificationDetails(
+      android: AndroidNotificationDetails(
         'basic_channel_id',
         'basic channel',
         channelDescription: 'Notification channel for basic messages',
-        importance: Importance.max,
+        importance: Importance.high,
         priority: Priority.high,
       ),
-      iOS: const DarwinNotificationDetails(),
+      iOS: DarwinNotificationDetails(),
     );
   }
 
-  // Show notification
-  Future<void> showNotification(
-    int id,
-    String title,
-    String body,
-  ) async {
-     return notificationPlugin.show(
+  Future<void> showNotification(int id, String title, String body) async {
+    await notificationPlugin.show(
       id,
       title,
       body,
-      NotificationDetails(),
+      notificationDetails(),
     );
   }
+
+
+  // Request permission for Android 13+ and iOS
+  Future<void> requestPermission() async {
+    // Android 13+
+    final androidPlugin =
+        notificationPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    await androidPlugin?.requestNotificationsPermission();
+
+    // iOS
+    final iosPlugin =
+        notificationPlugin.resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    await iosPlugin?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+
 }

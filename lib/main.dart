@@ -17,8 +17,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-// initialize Notification
-  LocalNotification().initialize();
+  // initialize Notification
+  await LocalNotification().initialize();
 
   runApp(
     DevicePreview(
@@ -51,11 +51,11 @@ class _MyAppState extends State<MyApp> {
     return val;
   }
 
-   
   @override
   void initState() {
     super.initState();
     getDuration();
+    LocalNotification().requestPermission();
   }
 
   @override
