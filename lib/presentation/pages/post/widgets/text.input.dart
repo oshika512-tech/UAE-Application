@@ -14,7 +14,7 @@ class TextInput {
       style: Theme.of(context).textTheme.bodySmall,
       maxLines: 5,
       decoration: InputDecoration(
-        hintText: 'Description',
+        hintText: 'What\'s on your mind?',
         hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: AppColors.gray,
             ),

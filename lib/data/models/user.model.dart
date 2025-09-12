@@ -4,7 +4,7 @@ class UserModel {
   final String email;
   final String uid;
   final String profileImage;
-  final bool isAdmin;
+  final bool isAdmin; 
 
   UserModel({
     this.id,
