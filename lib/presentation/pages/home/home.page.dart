@@ -63,13 +63,14 @@ class _HomePageState extends State<HomePage> {
                   itemCount: posts.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    return NoticeCard(
+                    return PostCard(
                       userName: posts[index].user.name,
                       userImage: posts[index].user.profileImage,
                       postUrlList: posts[index].post.images,
                       des: posts[index].post.description ?? "",
                       comments: posts[index].post.likes,
                       likes: posts[index].post.comments,
+                      time: posts[index].post.dateTime,
                     );
                   },
                 );

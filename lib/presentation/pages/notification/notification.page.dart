@@ -69,9 +69,12 @@ class NotificationPage extends StatelessWidget {
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
+                      print(notifications[index].dateTime.toString());
                       return NotificationCard(
                         title: notifications[index].title,
                         body: notifications[index].body,
+                        time: notifications[index].dateTime.toString(),
+                        
                       );
                     },
                   ),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
 class NotificationCard extends StatelessWidget {
   final String title;
   final String body;
+  final String time;
   const NotificationCard({
     super.key,
     required this.title,
     required this.body,
+    required this.time,
   });
 
   @override
@@ -58,19 +61,19 @@ class NotificationCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "1 min",
-                            style: theme.bodySmall!.copyWith(
-                              color: AppColors.gray,
-                              fontSize: 12,
-                            ),
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          DatetimeCalculate.timeAgo(DateTime.parse(time)),
+                          style: theme.bodySmall!.copyWith(
+                            color: AppColors.gray,
+                            fontSize: 12,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               )

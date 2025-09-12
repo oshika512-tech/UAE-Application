@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_center/core/constans/app.constans.dart';
+import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
-class NoticeCard extends StatefulWidget {
+class PostCard extends StatefulWidget {
   final String userName;
   final String userImage;
   final List<String> postUrlList;
   final String des;
   final int likes;
   final int comments;
-  const NoticeCard({
+  final DateTime time;
+  const PostCard({
     super.key,
     required this.userName,
     required this.userImage,
@@ -18,13 +20,14 @@ class NoticeCard extends StatefulWidget {
     required this.likes,
     required this.comments,
     required this.des,
+    required this.time,
   });
 
   @override
-  State<NoticeCard> createState() => _NoticeCardState();
+  State<PostCard> createState() => _PostCardState();
 }
 
-class _NoticeCardState extends State<NoticeCard> {
+class _PostCardState extends State<PostCard> {
   bool isMore = false;
   bool isLiked = false;
 
@@ -57,7 +60,7 @@ class _NoticeCardState extends State<NoticeCard> {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        "1 min ago",
+                        DatetimeCalculate.timeAgo(widget.time),
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
@@ -249,7 +252,7 @@ class _NoticeCardState extends State<NoticeCard> {
           height: length == 1 ? null : 150,
           fit: BoxFit.cover,
         ),
-          imageUrl2 != "null"
+        imageUrl2 != "null"
             ? Stack(
                 children: [
                   Image.network(
@@ -258,7 +261,7 @@ class _NoticeCardState extends State<NoticeCard> {
                     height: 150,
                     fit: BoxFit.cover,
                   ),
-                  lastChild && length>4
+                  lastChild && length > 4
                       ? Container(
                           color: const Color.fromARGB(143, 0, 0, 0),
                           width: MediaQuery.of(context).size.width * 0.43,
