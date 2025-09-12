@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/data/services/download.services.dart';
 
 class PostViewer extends StatefulWidget {
   final List<String> imagesList;
@@ -53,7 +54,7 @@ class _PostViewerState extends State<PostViewer> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 12),
+                padding: const EdgeInsets.only(right: 5),
                 child: PopupMenuButton<int>(
                   icon: const Icon(
                     Icons.more_vert_outlined,
@@ -66,7 +67,12 @@ class _PostViewerState extends State<PostViewer> {
                   ),
                   onSelected: (value) async {
                     if (value == 1) {
-                      //TODO : download image
+                       
+                      DownloadServices().saveGif(
+                        widget.imagesList[index],
+                        "image.${DateTime.now()}",
+                        context,
+                      );
                     }
                   },
                   itemBuilder: (context) => [
