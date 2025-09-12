@@ -7,6 +7,7 @@ import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:meditation_center/data/services/animation.services.dart';
+import 'package:meditation_center/providers/notification.provider.dart';
 import 'package:meditation_center/providers/post.with.users.provider.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
@@ -29,6 +30,7 @@ void main() async {
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => PostProvider()),
           ChangeNotifierProvider(create: (_) => PostWithUsersProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: MyApp(),
       ),

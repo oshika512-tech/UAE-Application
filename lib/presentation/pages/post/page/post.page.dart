@@ -12,6 +12,7 @@ import 'package:meditation_center/presentation/pages/post/widgets/post_upload_ui
 import 'package:meditation_center/presentation/pages/post/widgets/bottom.text.dart';
 import 'package:meditation_center/presentation/pages/post/widgets/image.card.dart';
 import 'package:meditation_center/presentation/pages/post/widgets/text.input.dart';
+import 'package:meditation_center/providers/notification.provider.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,12 @@ class _PostPageState extends State<PostPage> {
       );
 
       if (postStatus) {
-        // EasyLoading.dismiss();
+        final notificationProvider =
+            Provider.of<NotificationProvider>(context, listen: false);
+        await notificationProvider.addNewNotification(
+          "Uploaded",
+          "Your post has been uploaded successfully !",
+        );
 
         setState(() {
           imageList.clear();

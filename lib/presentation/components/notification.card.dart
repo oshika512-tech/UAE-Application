@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
 class NotificationCard extends StatelessWidget {
-  const NotificationCard({super.key});
+  final String title;
+  final String body;
+  const NotificationCard({
+    super.key,
+    required this.title,
+    required this.body,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,6 @@ class NotificationCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
- 
                       Container(
                         width: 12,
                         height: 12,
@@ -28,9 +33,8 @@ class NotificationCard extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                       ),
-
                       const SizedBox(width: 8),
-                      Text("Mediation Center",
+                      Text(title,
                           style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
@@ -41,7 +45,7 @@ class NotificationCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Text(
-                  "Hello! welcome to our new application here you can fine new updates and new events, you can publish or share your experiance with othere ",
+                  body,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         color: AppColors.gray,
                       ),
