@@ -249,7 +249,7 @@ class _NoticeCardState extends State<NoticeCard> {
           height: length == 1 ? null : 150,
           fit: BoxFit.cover,
         ),
-        imageUrl2 != "null"
+          imageUrl2 != "null"
             ? Stack(
                 children: [
                   Image.network(
@@ -258,7 +258,7 @@ class _NoticeCardState extends State<NoticeCard> {
                     height: 150,
                     fit: BoxFit.cover,
                   ),
-                  lastChild
+                  lastChild && length>4
                       ? Container(
                           color: const Color.fromARGB(143, 0, 0, 0),
                           width: MediaQuery.of(context).size.width * 0.43,
