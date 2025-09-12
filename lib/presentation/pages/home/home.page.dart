@@ -4,6 +4,7 @@ import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
+import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/notice.card.dart';
 import 'package:meditation_center/providers/post.with.users.provider.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20, ),
+      padding: const EdgeInsets.only(
+        top: 20,
+      ),
       child: RefreshIndicator(
         backgroundColor: AppColors.whiteColor,
         color: AppColors.primaryColor,
@@ -47,6 +50,11 @@ class _HomePageState extends State<HomePage> {
 
               if (snapshot.hasData) {
                 EasyLoading.dismiss();
+
+                if (snapshot.data!.isEmpty) {
+                  return EmptyAnimation(title: "No posts yet !");
+                }
+
                 final posts = snapshot.data as List<PostWithUsersModel>;
 
                 return ListView.builder(
@@ -54,13 +62,12 @@ class _HomePageState extends State<HomePage> {
                   physics: const BouncingScrollPhysics(),
                   itemCount: posts.length,
                   shrinkWrap: true,
-                  
                   itemBuilder: (context, index) {
                     return NoticeCard(
                       userName: posts[index].user.name,
                       userImage: posts[index].user.profileImage,
                       postUrlList: posts[index].post.images,
-                      des: posts[index].post.description??"",
+                      des: posts[index].post.description ?? "",
                       comments: posts[index].post.likes,
                       likes: posts[index].post.comments,
                     );

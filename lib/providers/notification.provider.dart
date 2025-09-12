@@ -67,9 +67,9 @@ class NotificationProvider extends ChangeNotifier {
         .where('userID', isEqualTo: userId)
         .get()
         .then((querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         doc.reference.delete();
-      });
+      }
     });
 
     notifyListeners();
