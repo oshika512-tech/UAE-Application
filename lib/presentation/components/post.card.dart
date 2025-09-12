@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/constans/app.constans.dart';
 import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
@@ -104,25 +105,41 @@ class _PostCardState extends State<PostCard> {
                 width: double.infinity,
                 child: Column(
                   children: [
-                    _imageCard(
-                      context,
-                      false,
-                      widget.postUrlList.length,
-                      widget.postUrlList[0],
-                      widget.postUrlList.length != 1
-                          ? widget.postUrlList[1]
-                          : "null",
+                    GestureDetector(
+                      onTap: () {
+                        context.push(
+                          '/viewer',
+                          extra: widget.postUrlList,
+                        );
+                      },
+                      child: _imageCard(
+                        context,
+                        false,
+                        widget.postUrlList.length,
+                        widget.postUrlList[0],
+                        widget.postUrlList.length != 1
+                            ? widget.postUrlList[1]
+                            : "null",
+                      ),
                     ),
                     const SizedBox(height: 10),
                     widget.postUrlList.length > 2
-                        ? _imageCard(
-                            context,
-                            true,
-                            widget.postUrlList.length,
-                            widget.postUrlList[2],
-                            widget.postUrlList.length != 3
-                                ? widget.postUrlList[3]
-                                : "null",
+                        ? GestureDetector(
+                            onTap: () {
+                              context.push(
+                                '/viewer',
+                                extra: widget.postUrlList,
+                              );
+                            },
+                            child: _imageCard(
+                              context,
+                              true,
+                              widget.postUrlList.length,
+                              widget.postUrlList[2],
+                              widget.postUrlList.length != 3
+                                  ? widget.postUrlList[3]
+                                  : "null",
+                            ),
                           )
                         : SizedBox.shrink(),
                   ],

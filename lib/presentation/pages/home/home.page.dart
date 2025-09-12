@@ -5,7 +5,7 @@ import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
-import 'package:meditation_center/presentation/components/notice.card.dart';
+import 'package:meditation_center/presentation/components/post.card.dart';
 import 'package:meditation_center/providers/post.with.users.provider.dart';
 import 'package:provider/provider.dart';
 

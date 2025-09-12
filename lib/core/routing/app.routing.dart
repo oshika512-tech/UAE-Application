@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/pages/account%20settings/account.settings.dart';
 import 'package:meditation_center/presentation/pages/animation%20settings/animation.settings.dart';
 import 'package:meditation_center/presentation/pages/help%20and%20supports/help.and.support.dart';
+import 'package:meditation_center/presentation/pages/post%20viewer/post.viewer.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/create.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/forgot.password.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/login.screen.dart';
@@ -15,14 +16,14 @@ import 'package:meditation_center/presentation/screens/splash/splash.screen.dart
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouting {
-
   final int duration;
   late final GoRouter appRouter;
 
   AppRouting({required this.duration}) {
     appRouter = GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation: FirebaseAuth.instance.currentUser != null ? '/main' : '/',
+      initialLocation:
+          FirebaseAuth.instance.currentUser != null ? '/main' : '/',
       // initialLocation: '/account_settings',
       routes: [
         _route(
@@ -94,6 +95,15 @@ class AppRouting {
           false,
           HelpAndSupport(),
           duration,
+        ),
+        // no - animation
+        GoRoute(
+          path: "/viewer",
+          name: "viewer",
+          builder: (context, state) {
+            final imagesList = state.extra as List<String>;
+            return PostViewer(imagesList: imagesList);
+          },
         ),
       ],
     );
