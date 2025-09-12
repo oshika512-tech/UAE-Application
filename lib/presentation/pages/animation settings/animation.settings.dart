@@ -147,7 +147,7 @@ Future<void> getDuration() async {
             SizedBox(height: height * 0.05),
             IntroductionText.text(
               theme,
-              "Animation duration must be a value between 1 and 10",
+              "Animation duration must be a value between 100 and 1000",
               false,
             ),
             IntroductionText.text(

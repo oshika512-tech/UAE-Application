@@ -6,7 +6,7 @@ import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/post.card.dart';
-import 'package:meditation_center/providers/post.with.users.provider.dart';
+import 'package:meditation_center/providers/post.with.user.data.provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,66 +18,87 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  late Future<List<PostWithUsersModel>> _postsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPosts();
+  }
+
+  void _loadPosts() {
+    final provider =
+        Provider.of<PostWithUserDataProvider>(context, listen: false);
+    _postsFuture = provider.getAllPosts();
+  }
 
   Future<void> _refreshPosts() async {
-    //TODO : refresh posts
+    try {
+      LoadingPopup.show("Refreshing posts...");
+      _loadPosts(); // update future
+      setState(() {}); // rebuild FutureBuilder
+    } catch (e) {
+      AppTopSnackbar.showTopSnackBar(context, "Failed to refresh posts");
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-      ),
+      padding: const EdgeInsets.only(top: 20),
       child: RefreshIndicator(
         backgroundColor: AppColors.whiteColor,
         color: AppColors.primaryColor,
         onRefresh: _refreshPosts,
-        child: Consumer(
-          builder: (context, PostWithUsersProvider postWithUser, child) =>
-              FutureBuilder(
-            future: postWithUser.getPostsWithUsers(),
-            builder: (context, snapshot) {
-              // error getting user
-              if (snapshot.hasError) {
-                EasyLoading.dismiss();
-                AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
-              }
-              // loading user data
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                LoadingPopup.show('Logging...');
-              }
+        child: FutureBuilder<List<PostWithUsersModel>>(
+          future: _postsFuture,
+          builder: (context, snapshot) {
+            // Error
+            if (snapshot.hasError) {
+              EasyLoading.dismiss();
+              AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+              return Center(
+                child: Text(
+                  "Error loading posts",
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+              );
+            }
 
-              if (snapshot.hasData) {
-                EasyLoading.dismiss();
+            // Loading
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              LoadingPopup.show('Loading...');
+              return const SizedBox.shrink();
+            }
 
-                if (snapshot.data!.isEmpty) {
-                  return EmptyAnimation(title: "No posts yet !");
-                }
+            EasyLoading.dismiss();
 
-                final posts = snapshot.data as List<PostWithUsersModel>;
+            final posts = snapshot.data ?? [];
 
-                return ListView.builder(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: posts.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return PostCard(
-                      userName: posts[index].user.name,
-                      userImage: posts[index].user.profileImage,
-                      postUrlList: posts[index].post.images,
-                      des: posts[index].post.description ?? "",
-                      comments: posts[index].post.likes,
-                      likes: posts[index].post.comments,
-                      time: posts[index].post.dateTime,
-                    );
-                  },
+            if (posts.isEmpty) {
+              return const EmptyAnimation(title: "No posts yet!");
+            }
+
+            return ListView.builder(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return PostCard(
+                  userName: post.user.name,
+                  userImage: post.user.profileImage,
+                  postUrlList: post.post.images,
+                  des: post.post.description ?? "",
+                  comments: post.post.likes,
+                  likes: post.post.comments,
+                  time: post.post.dateTime,
                 );
-              }
-              return SizedBox.shrink();
-            },
-          ),
+              },
+            );
+          },
         ),
       ),
     );

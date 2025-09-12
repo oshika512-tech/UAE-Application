@@ -4,10 +4,10 @@ import 'package:meditation_center/data/models/post.model.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 
-class PostWithUsersProvider extends ChangeNotifier {
+class PostWithUserDataProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<PostWithUsersModel>> getPostsWithUsers() async {
+  Future<List<PostWithUsersModel>> getAllPosts() async {
     // 1. Get all posts
     final postSnapshot = await _firestore.collection('posts').get();
     final posts = postSnapshot.docs.map((doc) {

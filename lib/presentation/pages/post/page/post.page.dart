@@ -49,6 +49,8 @@ class _PostPageState extends State<PostPage> {
     PopupWindow.conformImageUploadPopup(text, context, () async {
       context.pop();
       final postProvider = Provider.of<PostProvider>(context, listen: false);
+      final notificationProvider =
+            Provider.of<NotificationProvider>(context, listen: false);
       // LoadingPopup.show('Uploading...');
       showDialog(
         context: context,
@@ -66,8 +68,7 @@ class _PostPageState extends State<PostPage> {
       );
 
       if (postStatus) {
-        final notificationProvider =
-            Provider.of<NotificationProvider>(context, listen: false);
+         
         await notificationProvider.addNewNotification(
           "Uploaded",
           "Your post has been uploaded successfully !",
