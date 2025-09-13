@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:meditation_center/core/constans/app.constans.dart';
-import 'package:meditation_center/core/datetime/datetime.calculate.dart';
+import 'package:meditation_center/presentation/components/post.card.Components.dart';
+import 'package:meditation_center/presentation/components/post.card.user.info.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/providers/post.provider.dart';
+import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   final String userName;
@@ -13,6 +16,7 @@ class PostCard extends StatefulWidget {
   final int likes;
   final int comments;
   final DateTime time;
+  final String postID;
   const PostCard({
     super.key,
     required this.userName,
@@ -22,6 +26,7 @@ class PostCard extends StatefulWidget {
     required this.comments,
     required this.des,
     required this.time,
+    required this.postID,
   });
 
   @override
@@ -31,6 +36,31 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isMore = false;
   bool isLiked = false;
+  int numOfLikes = 0;
+  int numOfComments = 0;
+  final cUser = FirebaseAuth.instance.currentUser!.uid;
+
+  void assignNum() {
+    setState(() {
+      numOfLikes = widget.likes;
+      numOfComments = widget.comments;
+    });
+  }
+
+  void checkUserLikeStatus() async {
+    final postProvider = Provider.of<PostProvider>(context, listen: false);
+    bool status = await postProvider.hasUserLikedPost(widget.postID, cUser);
+    setState(() {
+      isLiked = status;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkUserLikeStatus();
+    assignNum();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,35 +71,10 @@ class _PostCardState extends State<PostCard> {
           child: Column(
             children: [
               // user info
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(
-                      widget.userImage != ""
-                          ? widget.userImage
-                          : AppData.baseUserUrl,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.userName,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        DatetimeCalculate.timeAgo(widget.time),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: AppColors.gray, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ],
+              PostCardUserInfo(
+                userName: widget.userName,
+                userImage: widget.userImage,
+                time: widget.time,
               ),
 
               const SizedBox(height: 10),
@@ -112,7 +117,7 @@ class _PostCardState extends State<PostCard> {
                           extra: widget.postUrlList,
                         );
                       },
-                      child: _imageCard(
+                      child: PostCardComponents.imageCard(
                         context,
                         false,
                         widget.postUrlList.length,
@@ -131,7 +136,7 @@ class _PostCardState extends State<PostCard> {
                                 extra: widget.postUrlList,
                               );
                             },
-                            child: _imageCard(
+                            child: PostCardComponents.imageCard(
                               context,
                               true,
                               widget.postUrlList.length,
@@ -152,10 +157,14 @@ class _PostCardState extends State<PostCard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${widget.likes} like",
-                        style: Theme.of(context).textTheme.bodySmall),
-                    Text("${widget.comments} comments",
-                        style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      "$numOfLikes like",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      "$numOfComments comments",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ),
@@ -163,37 +172,49 @@ class _PostCardState extends State<PostCard> {
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _actionBtn(
-                      context,
-                      Icons.thumb_up,
-                      "Like",
-                      isLiked,
-                      () {
-                        setState(() {
-                          isLiked = !isLiked;
-                        });
-                      },
-                    ),
-                    _actionBtn(
-                      context,
-                      Icons.comment,
-                      "Comment",
-                      false,
-                      () {
-                        CommentPage.bottomSheet(context);
-                      },
-                    ),
-                    _actionBtn(
-                      context,
-                      Icons.share_outlined,
-                      "Share",
-                      false,
-                      () {},
-                    ),
-                  ],
+                child: Consumer(
+                  builder: (BuildContext context, PostProvider postProvider,
+                          child) =>
+                      Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PostCardComponents.actionBtn(
+                        context,
+                        Icons.thumb_up,
+                        "Like",
+                        isLiked,
+                        () {
+                          setState(() {
+                            isLiked = !isLiked;
+                          });
+
+                          if (isLiked) {
+                            numOfLikes++;
+                            postProvider.likePost(widget.postID, cUser);
+                          } else {
+                            numOfLikes--;
+                            postProvider.dislikePost(widget.postID, cUser);
+                          }
+                        },
+                      ),
+                      PostCardComponents.actionBtn(
+                        context,
+                        Icons.comment,
+                        "Comment",
+                        false,
+                        () {
+                          CommentPage.bottomSheet(context);
+                        },
+                      ),
+                      PostCardComponents.actionBtn(
+                        context,
+                        Icons.share_outlined,
+                        "Share",
+                        false,
+                        () {},
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -205,100 +226,6 @@ class _PostCardState extends State<PostCard> {
           width: double.infinity,
           color: AppColors.gray.withOpacity(0.1),
         ),
-      ],
-    );
-  }
-
-  Widget _actionBtn(
-    BuildContext context,
-    IconData icon,
-    String text,
-    bool isColors,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          color: isColors ? AppColors.primaryColor : null,
-          border: Border.all(
-            color: isColors ? AppColors.primaryColor : AppColors.gray,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isColors ? AppColors.whiteColor : AppColors.gray,
-              size: 20,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              text,
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color:
-                        isColors ? AppColors.whiteColor : AppColors.textColor,
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _imageCard(
-    BuildContext context,
-    bool lastChild,
-    int length,
-    String imageUrl1,
-    String imageUrl2,
-  ) {
-    return Row(
-      mainAxisAlignment: length == 1
-          ? MainAxisAlignment.center
-          : MainAxisAlignment.spaceBetween,
-      children: [
-        Image.network(
-          imageUrl1,
-          width: length == 1
-              ? MediaQuery.of(context).size.width * 0.85
-              : MediaQuery.of(context).size.width * 0.43,
-          height: length == 1 ? null : 150,
-          fit: BoxFit.cover,
-        ),
-        imageUrl2 != "null"
-            ? Stack(
-                children: [
-                  Image.network(
-                    imageUrl2,
-                    width: MediaQuery.of(context).size.width * 0.43,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
-                  lastChild && length > 4
-                      ? Container(
-                          color: const Color.fromARGB(143, 0, 0, 0),
-                          width: MediaQuery.of(context).size.width * 0.43,
-                          height: 200,
-                          child: Center(
-                            child: Text(
-                              "${length - 4} +",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                      color: AppColors.whiteColor,
-                                      fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                ],
-              )
-            : SizedBox.shrink(),
       ],
     );
   }

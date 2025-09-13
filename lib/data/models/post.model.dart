@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostModel {
+  final String id;
   final String? description;
   final String userId;
   final String userName;
@@ -9,8 +10,10 @@ class PostModel {
   final int likes;
   final int comments;
   final List<String> comment_ids;
+  final List<String> likedUsersIds;
 
   PostModel({
+    required this.id,
     required this.description,
     required this.userId,
     required this.userName,
@@ -19,10 +22,12 @@ class PostModel {
     required this.likes,
     required this.comments,
     required this.comment_ids,
+    required this.likedUsersIds,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
+      id: json['id'] as String,
       description: json['description'] as String?,
       userId: json['userId'] as String,
       userName: json['userName'] as String,
@@ -33,11 +38,13 @@ class PostModel {
       likes: json['likes'] as int? ?? 0,
       comments: json['comments'] as int? ?? 0,
       comment_ids: List<String>.from(json['comments_id'] ?? []),
+      likedUsersIds: List<String>.from(json['likedUsersIds'] ?? []),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'description': description,
       'userId': userId,
       'userName': userName,
@@ -46,6 +53,7 @@ class PostModel {
       'likes': likes,
       'comments': comments,
       'comments_id': comment_ids,
+      'likedUsersIds': likedUsersIds,
     };
   }
 }

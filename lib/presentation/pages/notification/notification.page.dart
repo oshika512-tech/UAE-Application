@@ -64,19 +64,23 @@ class NotificationPage extends StatelessWidget {
                     ),
                   ),
                    
-                  ListView.builder(
-                    itemCount: notifications.length,
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      print(notifications[index].dateTime.toString());
-                      return NotificationCard(
-                        title: notifications[index].title,
-                        body: notifications[index].body,
-                        time: notifications[index].dateTime.toString(),
-                        
-                      );
-                    },
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                        itemCount: notifications.length,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          print(notifications[index].dateTime.toString());
+                          return NotificationCard(
+                            title: notifications[index].title,
+                            body: notifications[index].body,
+                            time: notifications[index].dateTime.toString(),
+                            
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               );

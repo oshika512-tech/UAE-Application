@@ -57,23 +57,26 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             // Error
             if (snapshot.hasError) {
-              EasyLoading.dismiss();
-              AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                EasyLoading.dismiss();
+                AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
+              });
               return Center(
-                child: Text(
-                  "Error loading posts",
-                  style: TextStyle(color: AppColors.primaryColor),
-                ),
+                child:  EmptyAnimation(title: "Error loading posts !"),
               );
             }
 
             // Loading
             if (snapshot.connectionState == ConnectionState.waiting) {
-              LoadingPopup.show('Loading...');
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                LoadingPopup.show('Loading...');
+              });
               return const SizedBox.shrink();
             }
 
-            EasyLoading.dismiss();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              EasyLoading.dismiss();
+            });
 
             final posts = snapshot.data ?? [];
 
@@ -92,9 +95,10 @@ class _HomePageState extends State<HomePage> {
                   userImage: post.user.profileImage,
                   postUrlList: post.post.images,
                   des: post.post.description ?? "",
-                  comments: post.post.likes,
-                  likes: post.post.comments,
+                  comments: post.post.comments,
+                  likes: post.post.likes,
                   time: post.post.dateTime,
+                  postID: post.post.id,
                 );
               },
             );

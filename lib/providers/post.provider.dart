@@ -28,6 +28,7 @@ class PostProvider extends ChangeNotifier {
     final docRef = _firestore.collection('posts').doc();
 
     final post = PostModel(
+      id: docRef.id,
       description: des,
       userId: userId,
       userName: name,
@@ -36,6 +37,7 @@ class PostProvider extends ChangeNotifier {
       likes: 0,
       comments: 0,
       comment_ids: [],
+      likedUsersIds: [],
     );
 
     try {
@@ -141,5 +143,69 @@ class PostProvider extends ChangeNotifier {
     return uploadedUrls;
   }
 
-  
+  /// Like a post
+  Future<void> likePost(String postId, String userId) async {
+    final postRef = _firestore.collection('posts').doc(postId);
+
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(postRef);
+
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data() as Map<String, dynamic>;
+      final likedUsers = List<String>.from(data['likedUsersIds'] ?? []);
+      final likes = data['likes'] ?? 0;
+
+      // If user already liked → do nothing
+      if (likedUsers.contains(userId)) return;
+
+      likedUsers.add(userId);
+
+      transaction.update(postRef, {
+        'likes': likes + 1,
+        'likedUsersIds': likedUsers,
+      });
+    });
+  }
+
+  /// Dislike a post (remove like)
+  Future<void> dislikePost(String postId, String userId) async {
+    final postRef = _firestore.collection('posts').doc(postId);
+
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(postRef);
+
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data() as Map<String, dynamic>;
+      final likedUsers = List<String>.from(data['likedUsersIds'] ?? []);
+      final likes = data['likes'] ?? 0;
+
+      // If user hasn’t liked → do nothing
+      if (!likedUsers.contains(userId)) return;
+
+      likedUsers.remove(userId);
+
+      transaction.update(postRef, {
+        'likes': likes > 0 ? likes - 1 : 0,
+        'likedUsersIds': likedUsers,
+      });
+    });
+  }
+
+  /// Check if user has liked a post
+  Future<bool> hasUserLikedPost(String postId, String userId) async {
+    try {
+      final doc = await _firestore.collection('posts').doc(postId).get();
+
+      if (!doc.exists) return false;
+
+      final data = doc.data() as Map<String, dynamic>;
+      final likedUsers = List<String>.from(data['likedUsersIds'] ?? []);
+
+      return likedUsers.contains(userId);
+    } catch (e) {
+      return false;
+    }
+  }
 }

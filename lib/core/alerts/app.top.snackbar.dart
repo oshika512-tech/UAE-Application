@@ -39,6 +39,11 @@ class AppTopSnackbar {
       borderRadius: BorderRadius.circular(8),
     );
 
-    return flush.show(context);
+    // 🟢 Fix: show snackbar after build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      flush.show(context);
+    });
+
+    return Future.value();
   }
 }

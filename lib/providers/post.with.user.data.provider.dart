@@ -10,14 +10,10 @@ class PostWithUserDataProvider extends ChangeNotifier {
   Future<List<PostWithUsersModel>> getAllPosts() async {
     // 1. Get all posts
     final postSnapshot = await _firestore.collection('posts').get();
+
     final posts = postSnapshot.docs.map((doc) {
       final data = doc.data();
-      return PostModel.fromJson({
-        ...data,
-        'dateTime': (data['dateTime'] as dynamic) is DateTime
-            ? data['dateTime'] as DateTime
-            : (data['dateTime'] as Timestamp).toDate(),
-      });
+      return PostModel.fromJson(data);
     }).toList();
 
     // 2. Get unique userIds from posts
@@ -42,18 +38,19 @@ class PostWithUserDataProvider extends ChangeNotifier {
       } else {
         // fallback user if not found
         return PostWithUsersModel(
-            post: post,
-            user: UserModel(
-                id: null,
-                name: 'Unknown',
-                email: '',
-                uid: '',
-                profileImage: '',
-                isAdmin: false));
+          post: post,
+          user: UserModel(
+            id: null,
+            name: 'Unknown',
+            email: '',
+            uid: '',
+            profileImage: '',
+            isAdmin: false,
+          ),
+        );
       }
     }).toList();
 
-// 🔹 Sort by dateTime descending (newest first)
     postWithUsers.sort((a, b) => b.post.dateTime.compareTo(a.post.dateTime));
 
     return postWithUsers;
