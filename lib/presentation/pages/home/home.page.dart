@@ -6,6 +6,7 @@ import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/post.card.dart';
+import 'package:meditation_center/presentation/components/post.loading.card.dart';
 import 'package:meditation_center/providers/post.with.user.data.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
-  late Future<List<PostWithUsersModel>> _postsFuture;
+  late Stream<List<PostWithUsersModel>> _postsFuture;
 
   @override
   void initState() {
@@ -34,9 +35,10 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _refreshPosts() async {
     try {
+
       LoadingPopup.show("Refreshing posts...");
-      _loadPosts(); // update future
-      setState(() {}); // rebuild FutureBuilder
+      _loadPosts(); // update  
+      setState(() {}); // rebuild  
     } catch (e) {
       AppTopSnackbar.showTopSnackBar(context, "Failed to refresh posts");
     } finally {
@@ -52,8 +54,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: AppColors.whiteColor,
         color: AppColors.primaryColor,
         onRefresh: _refreshPosts,
-        child: FutureBuilder<List<PostWithUsersModel>>(
-          future: _postsFuture,
+        child: StreamBuilder<List<PostWithUsersModel>>(
+          stream: _postsFuture,
           builder: (context, snapshot) {
             // Error
             if (snapshot.hasError) {
@@ -69,7 +71,7 @@ class _HomePageState extends State<HomePage> {
             // Loading
             if (snapshot.connectionState == ConnectionState.waiting) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                LoadingPopup.show('Loading...');
+                PostLoadingCard();
               });
               return const SizedBox.shrink();
             }
@@ -91,13 +93,7 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 final post = posts[index];
                 return PostCard(
-                  userName: post.user.name,
-                  userImage: post.user.profileImage,
-                  postUrlList: post.post.images,
-                  des: post.post.description ?? "",
-                  comments: post.post.comments,
-                  likes: post.post.likes,
-                  time: post.post.dateTime,
+                  
                   postID: post.post.id,
                 );
               },

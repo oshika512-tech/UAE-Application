@@ -6,7 +6,7 @@ import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/pages/booking/booking.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
 import 'package:meditation_center/presentation/pages/notification/notification.page.dart';
-import 'package:meditation_center/presentation/pages/post/page/post.page.dart';
+import 'package:meditation_center/presentation/pages/upload/page/upload.page.dart';
 import 'package:meditation_center/presentation/pages/chat%20room/chat.room.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/services/user.services.dart';
@@ -116,7 +116,7 @@ class _MainScreenState extends State<MainScreen> {
                 ChatRoomPage(),
 
                 // PostPage
-                PostPage(),
+                UploadPage(),
 
                 // BookingPage
                 BookingPage(),

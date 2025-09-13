@@ -8,23 +8,23 @@ import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/components/app.buttons.dart';
-import 'package:meditation_center/presentation/pages/post/widgets/post_upload_ui.dart';
-import 'package:meditation_center/presentation/pages/post/widgets/bottom.text.dart';
-import 'package:meditation_center/presentation/pages/post/widgets/image.card.dart';
-import 'package:meditation_center/presentation/pages/post/widgets/text.input.dart';
+import 'package:meditation_center/presentation/pages/upload/widgets/post_upload_ui.dart';
+import 'package:meditation_center/presentation/pages/upload/widgets/bottom.text.dart';
+import 'package:meditation_center/presentation/pages/upload/widgets/image.card.dart';
+import 'package:meditation_center/presentation/pages/upload/widgets/text.input.dart';
 import 'package:meditation_center/providers/notification.provider.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
 
-class PostPage extends StatefulWidget {
-  const PostPage({super.key});
+class UploadPage extends StatefulWidget {
+  const UploadPage({super.key});
 
   @override
-  State<PostPage> createState() => _PostPageState();
+  State<UploadPage> createState() => _UploadPageState();
 }
 
-class _PostPageState extends State<PostPage> {
+class _UploadPageState extends State<UploadPage> {
   final ImagePicker picker = ImagePicker();
   List<XFile> imageList = [];
   final TextEditingController descriptionController = TextEditingController();
