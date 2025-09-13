@@ -4,6 +4,7 @@ import 'package:meditation_center/core/theme/app.colors.dart';
 class PopupWindow {
   static void conformImageUploadPopup(
     String title,
+    String buttonText, 
     BuildContext context,
     VoidCallback onConfirm,
     VoidCallback onCancel,
@@ -50,7 +51,7 @@ class PopupWindow {
                   TextButton(
                     onPressed: onConfirm,
                     child: Text(
-                      "Yes, Upload",
+                     buttonText,
                       style: theme.textTheme.bodySmall 
                     ),
                   ),

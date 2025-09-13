@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_center/presentation/components/app.buttons.dart';
 import 'package:meditation_center/presentation/components/booking.card.dart';
 
 class BookingPage extends StatelessWidget {
@@ -24,21 +23,22 @@ class BookingPage extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: AppButtons(
-                    text: "Add",
-                    isPrimary: true,
-                    width: 100,
-                    height: 33,
-                    icon: Icons.add,
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.symmetric(vertical: 10),
+            //       child: AppButtons(
+            //         text: "Add",
+            //         isPrimary: true,
+            //         width: 100,
+            //         height: 33,
+            //         icon: Icons.add,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: 20),
             ListView.builder(
               itemCount: menuItems.length,
               shrinkWrap: true,

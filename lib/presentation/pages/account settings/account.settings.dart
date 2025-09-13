@@ -40,6 +40,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   conform(XFile imagePath) {
     return PopupWindow.conformImageUploadPopup(
       "Conform to upload image",
+      "Yes, Upload",
       context,
       () async {
         context.pop();

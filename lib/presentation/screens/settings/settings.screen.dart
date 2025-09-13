@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
 import 'package:meditation_center/core/constans/app.constans.dart';
+import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/components/user.card.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
@@ -28,8 +29,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await FirebaseAuth.instance.signOut();
     if (!mounted) return;
     context.goNamed(
-    'login', 
-  );
+      'login',
+    );
     EasyLoading.dismiss();
     EasyLoading.showSuccess('Logged out successfully!');
   }
@@ -168,7 +169,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   "Logout",
                                   "Sign out of your account",
                                   () {
-                                    logOut();
+                                    PopupWindow.conformImageUploadPopup(
+                                      "This action cannot be undone\nAre you sure you want to continue?",
+                                      "Yes, Logout",
+                                      context,
+                                      () {
+                                        logOut();
+                                      },
+                                      () {
+                                        context.pop();
+                                      },
+                                    );
+                                     
                                   },
                                 ),
                                 Spacer(),

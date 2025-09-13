@@ -46,11 +46,11 @@ class _PostPageState extends State<PostPage> {
     String userName,
     List<XFile> images,
   ) {
-    PopupWindow.conformImageUploadPopup(text, context, () async {
+    PopupWindow.conformImageUploadPopup(text, "Yes, Upload", context, () async {
       context.pop();
       final postProvider = Provider.of<PostProvider>(context, listen: false);
       final notificationProvider =
-            Provider.of<NotificationProvider>(context, listen: false);
+          Provider.of<NotificationProvider>(context, listen: false);
       // LoadingPopup.show('Uploading...');
       showDialog(
         context: context,
@@ -68,7 +68,6 @@ class _PostPageState extends State<PostPage> {
       );
 
       if (postStatus) {
-         
         await notificationProvider.addNewNotification(
           "Uploaded",
           "Your post has been uploaded successfully !",
@@ -153,9 +152,10 @@ class _PostPageState extends State<PostPage> {
                             });
 
                             continueUpload(
-                                " This action cannot be undone. Are you sure you want to continue?",
-                                user.name,
-                                imageList);
+                              " This action cannot be undone. Are you sure you want to continue?",
+                              user.name,
+                              imageList,
+                            );
                           } else {
                             AppTopSnackbar.showTopSnackBar(
                                 context, "Please select images to upload");
