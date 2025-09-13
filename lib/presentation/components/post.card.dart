@@ -50,6 +50,7 @@ class _PostCardState extends State<PostCard> {
   void checkUserLikeStatus() async {
     final postProvider = Provider.of<PostProvider>(context, listen: false);
     bool status = await postProvider.hasUserLikedPost(widget.postID, cUser);
+    if (!mounted) return; 
     setState(() {
       isLiked = status;
     });
