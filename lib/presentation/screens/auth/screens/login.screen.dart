@@ -32,6 +32,25 @@ class _LoginScreenState extends State<LoginScreen> {
       isEPassError = passwordController.text.isEmpty;
     });
 
+    void verify() async {
+      LoadingPopup.show('Verifying...');
+
+      final result = await AuthServices.isEmailVerified();
+      if (result) {
+        context.pushReplacement(
+          '/main',
+        );
+        EasyLoading.dismiss();
+        EasyLoading.showSuccess('Verified !', duration: Duration(seconds: 2));
+      } else {
+        EasyLoading.dismiss();
+        AppTopSnackbar.showTopSnackBar(context, "Email not verified !");
+        context.push(
+          '/verify',
+        );
+      }
+    }
+
     // continue login
     if (!isEPassError && !isEmailError) {
       if (AuthServices.isValidEmail(emailController.text)) {
@@ -51,9 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
           AppTopSnackbar.showTopSnackBar(context, "invalid email or password");
           EasyLoading.dismiss();
         } else if (result == 'Successfully') {
-          context.pushReplacement(
-            '/main',
-          );
+          // context.pushReplacement(
+          //   '/main',
+          // );
+          verify();
           EasyLoading.dismiss();
         }
       } else {

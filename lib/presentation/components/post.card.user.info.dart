@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meditation_center/core/constans/app.constans.dart';
+import 'package:meditation_center/core/constance/app.constance.dart';
 import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 

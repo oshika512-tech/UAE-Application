@@ -20,8 +20,7 @@ class PostCard extends StatefulWidget {
   State<PostCard> createState() => _PostCardState();
 }
 
-class _PostCardState extends State<PostCard>
-    with AutomaticKeepAliveClientMixin {
+class _PostCardState extends State<PostCard> {
   bool isMore = false;
   bool isLiked = false;
   int numOfLikes = 0;
@@ -45,8 +44,6 @@ class _PostCardState extends State<PostCard>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // 👈 very important for keepAlive to work
-
     final postWithUserDataProvider =
         Provider.of<PostWithUserDataProvider>(context, listen: false);
     final postProvider = Provider.of<PostProvider>(context, listen: false);
@@ -76,7 +73,7 @@ class _PostCardState extends State<PostCard>
                       onPressed: () {
                         setState(() {});
                       },
-                      child: const Text("Try again"),
+                      child: Text("Try again"),
                     ),
                   ],
                 );
@@ -248,7 +245,4 @@ class _PostCardState extends State<PostCard>
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

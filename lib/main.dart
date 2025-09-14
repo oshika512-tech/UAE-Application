@@ -32,8 +32,8 @@ void main() async {
           ChangeNotifierProvider(create: (_) => PostProvider()),
           ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
           ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
-           ChangeNotifierProvider(create: (_) => NotificationProvider()),
-           ChangeNotifierProvider(create: (_) => CommentProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
+          ChangeNotifierProvider(create: (_) => CommentProvider()),
         ],
         child: MyApp(),
       ),
@@ -57,10 +57,12 @@ class _MyAppState extends State<MyApp> {
     });
     return val;
   }
+ 
 
   @override
   void initState() {
     super.initState();
+     
     getDuration();
     LocalNotification().requestPermission();
   }

@@ -48,7 +48,7 @@ class VerifyScreen extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Text(
-                'We\'ve sent a verification link to your email address. Please check your inbox and click the link to verify your account.',
+                'We\'ve sent a verification link to your email address. Please check your spam folder if you don\'t see it.',
                 style: theme.textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -67,15 +67,15 @@ class VerifyScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.arrow_back_ios_new_rounded,
+                  Icon(Icons.arrow_forward_ios_rounded,
                       color: theme.primaryColor, size: 14),
                   SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
-                      context.pop();
+                      context.push('/login');
                     },
                     child: Text(
-                      'Back to Create Account',
+                      'Back login',
                       style: theme.textTheme.bodySmall!
                           .copyWith(color: theme.primaryColor),
                       textAlign: TextAlign.center,

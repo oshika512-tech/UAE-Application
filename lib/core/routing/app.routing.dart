@@ -10,6 +10,7 @@ import 'package:meditation_center/presentation/screens/auth/screens/create.scree
 import 'package:meditation_center/presentation/screens/auth/screens/forgot.password.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/login.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/verify.screen.dart';
+import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
 import 'package:meditation_center/presentation/screens/main/main.screen.dart';
 import 'package:meditation_center/presentation/screens/settings/settings.screen.dart';
 import 'package:meditation_center/presentation/screens/splash/splash.screen.dart';
@@ -23,8 +24,10 @@ class AppRouting {
   AppRouting({required this.duration}) {
     appRouter = GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation:
-          FirebaseAuth.instance.currentUser != null ? '/main' : '/',
+      initialLocation: FirebaseAuth.instance.currentUser != null
+          ? (AuthServices.isEmailVerified()==true ? '/main' : '/verify')
+          : '/',
+
       // initialLocation: '/account_settings',
       routes: [
         _route(
@@ -112,7 +115,7 @@ class AppRouting {
           name: "comment",
           builder: (context, state) {
             final postID = state.extra as String;
-            return CommentPage(postID:postID);
+            return CommentPage(postID: postID);
           },
         ),
       ],
