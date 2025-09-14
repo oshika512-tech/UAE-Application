@@ -1,15 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:meditation_center/core/constance/app.constance.dart';
-import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/pages/booking/booking.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
 import 'package:meditation_center/presentation/pages/notification/notification.page.dart';
 import 'package:meditation_center/presentation/pages/upload/page/upload.page.dart';
 import 'package:meditation_center/presentation/pages/chat%20room/chat.room.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
-import 'package:meditation_center/data/services/user.services.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,35 +16,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  void checkUser() async {
-    final isUserIdExists = await UserServices()
-        .isUserIdExists(FirebaseAuth.instance.currentUser!.uid);
-
-    if (!isUserIdExists) {
-      // user not exists, then add to collection
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        UserServices().addNewUser(
-          UserModel(
-            name: currentUser.displayName == null
-                ? "User"
-                : currentUser.displayName.toString(),
-            email: currentUser.email.toString(),
-            uid: currentUser.uid.toString(),
-            profileImage: currentUser.photoURL == null
-                ? AppData.baseUserUrl
-                : currentUser.photoURL.toString(),
-            isAdmin: false,
-          ),
-        );
-      } else {
-        // user not exists, then return to login
-        if (!mounted) return;
-        context.push('/login');
-      }
-    }
-  }
-
   validateUser() {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
@@ -58,11 +26,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
     // validate User
     validateUser();
-    // checkUser status
-    checkUser();
   }
 
   @override

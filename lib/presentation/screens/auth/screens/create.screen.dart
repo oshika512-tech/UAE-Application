@@ -52,6 +52,7 @@ class _CreateScreenState extends State<CreateScreen> {
           final result = await AuthServices.createAccountWithEmailAndPassword(
             emailController.text,
             passwordController.text,
+            nameController.text,
           );
             if (!mounted) return;
 

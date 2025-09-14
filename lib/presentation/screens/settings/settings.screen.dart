@@ -149,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   },
                                 ),
                                 _items(
-                                  Icons.settings,
+                                  Icons.person_3_sharp,
                                   "Account settings",
                                   "Manage your account",
                                   () {

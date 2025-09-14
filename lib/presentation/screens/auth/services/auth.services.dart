@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:meditation_center/core/constance/app.constance.dart';
+import 'package:meditation_center/data/models/user.model.dart';
+import 'package:meditation_center/data/services/user.services.dart';
 
 class AuthServices {
   // password authentication
@@ -23,7 +26,10 @@ class AuthServices {
 
   // create password account
   static Future<String> createAccountWithEmailAndPassword(
-      String emailAddress, String password) async {
+    String emailAddress,
+    String password,
+    String name,
+  ) async {
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -32,6 +38,7 @@ class AuthServices {
       );
       if (credential.user != null) {
         sendEmailVerification(emailAddress);
+        checkUser(name);
         return 'Successfully';
       }
     } on FirebaseAuthException catch (e) {
@@ -44,6 +51,29 @@ class AuthServices {
       return e.toString();
     }
     return 'Unknown error occurred.';
+  }
+
+  static void checkUser(String name) async {
+    final isUserIdExists = await UserServices()
+        .isUserIdExists(FirebaseAuth.instance.currentUser!.uid);
+
+    if (!isUserIdExists) {
+      // user not exists, then add to collection
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        UserServices().addNewUser(
+          UserModel(
+            name: name,
+            email: currentUser.email.toString(),
+            uid: currentUser.uid.toString(),
+            profileImage: currentUser.photoURL == null
+                ? AppData.baseUserUrl
+                : currentUser.photoURL.toString(),
+            isAdmin: false,
+          ),
+        );
+      } else {}
+    }
   }
 
   // send email verification
