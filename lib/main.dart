@@ -7,6 +7,7 @@ import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:meditation_center/data/services/animation.services.dart';
+import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
 import 'package:meditation_center/providers/comment.provider.dart';
 import 'package:meditation_center/providers/notification.provider.dart';
 import 'package:meditation_center/providers/post.with.user.data.provider.dart';
@@ -50,6 +51,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int durationVal = 1;
+
+  bool isVerifyUser = false;
   Future<int> getDuration() async {
     final val = await AnimationServices().getAnimationDuration();
     setState(() {
@@ -57,12 +60,20 @@ class _MyAppState extends State<MyApp> {
     });
     return val;
   }
- 
+
+  void verify() async {
+    final result = await AuthServices.isEmailVerified();
+    if (result) {
+      setState(() {
+        isVerifyUser = true;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-     
+    verify();
     getDuration();
     LocalNotification().requestPermission();
   }
@@ -73,7 +84,8 @@ class _MyAppState extends State<MyApp> {
       title: 'Mediation Center',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      routerConfig: AppRouting(duration: durationVal).appRouter,
+      routerConfig:
+          AppRouting(duration: durationVal, isVerify: isVerifyUser).appRouter,
       builder: EasyLoading.init(),
     );
   }

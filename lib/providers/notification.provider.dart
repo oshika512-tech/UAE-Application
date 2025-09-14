@@ -51,6 +51,8 @@ class NotificationProvider extends ChangeNotifier {
       });
     }).toList();
 
+    notifications.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+
     return notifications;
   }
 

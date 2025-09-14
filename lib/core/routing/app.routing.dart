@@ -10,7 +10,6 @@ import 'package:meditation_center/presentation/screens/auth/screens/create.scree
 import 'package:meditation_center/presentation/screens/auth/screens/forgot.password.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/login.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/verify.screen.dart';
-import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
 import 'package:meditation_center/presentation/screens/main/main.screen.dart';
 import 'package:meditation_center/presentation/screens/settings/settings.screen.dart';
 import 'package:meditation_center/presentation/screens/splash/splash.screen.dart';
@@ -19,13 +18,14 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouting {
   final int duration;
+  final bool isVerify;
   late final GoRouter appRouter;
 
-  AppRouting({required this.duration}) {
+  AppRouting({required this.duration, required this.isVerify}) {
     appRouter = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: FirebaseAuth.instance.currentUser != null
-          ? (AuthServices.isEmailVerified()==true ? '/main' : '/verify')
+          ? (isVerify ? '/main' : '/verify')
           : '/',
 
       // initialLocation: '/account_settings',

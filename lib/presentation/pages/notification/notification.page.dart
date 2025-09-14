@@ -14,6 +14,7 @@ class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cUser = FirebaseAuth.instance.currentUser!.uid;
+    int i = 10;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -36,6 +37,15 @@ class NotificationPage extends StatelessWidget {
               }
 
               final notifications = snapshot.data as List<NotificationModel>;
+
+               
+
+              if (notifications.length>10) {
+                if (notifications.length >= i) {
+                  notificationProvider.deleteNotificationById(notifications[i].id);
+                  i++;
+                }
+              }
 
               return Column(
                 children: [
