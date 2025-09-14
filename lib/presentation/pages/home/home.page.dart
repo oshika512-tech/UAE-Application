@@ -35,10 +35,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _refreshPosts() async {
     try {
-
       LoadingPopup.show("Refreshing posts...");
-      _loadPosts(); // update  
-      setState(() {}); // rebuild  
+      _loadPosts(); // update
+      setState(() {}); // rebuild
     } catch (e) {
       AppTopSnackbar.showTopSnackBar(context, "Failed to refresh posts");
     } finally {
@@ -64,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
               });
               return Center(
-                child:  EmptyAnimation(title: "Error loading posts !"),
+                child: EmptyAnimation(title: "Error loading posts !"),
               );
             }
 
@@ -93,7 +92,6 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 final post = posts[index];
                 return PostCard(
-                  
                   postID: post.post.id,
                 );
               },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meditation_center/presentation/components/app.input.dart';
 import 'package:meditation_center/presentation/components/comment.card.dart';
 
 class CommentPage {
@@ -19,20 +20,36 @@ class CommentPage {
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: ListView.builder(
-                    itemCount: 5,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return CommentCard(
-                        isNotCurrentUser: true,
-                      );
-                    },
-                  ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Column(
+                  children: [
+                    // Comment list
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: 5,
+                        padding: const EdgeInsets.all(16),
+                        itemBuilder: (context, index) {
+                          return CommentCard(isNotCurrentUser: true);
+                        },
+                      ),
+                    ),
+                    // Input field at bottom
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8),
+                        child: AppInput(
+                          hintText: "Type your message",
+                          prefixIcon: Icons.type_specimen,
+                          suffixIcon: Icons.send,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
