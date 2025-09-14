@@ -21,8 +21,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // initialize Notification
+  // Initializing notification
   await LocalNotification().initialize();
+
+  // Get verification status and animation duration before running the app
+  final bool isUserVerified = await AuthServices.isEmailVerified();
+  final int animationDuration = await AnimationServices().getAnimationDuration();
 
   runApp(
     DevicePreview(
@@ -32,51 +36,26 @@ void main() async {
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => PostProvider()),
           ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
-          ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
           ChangeNotifierProvider(create: (_) => CommentProvider()),
         ],
-        child: MyApp(),
+        child: MyApp(
+          isUserVerified: isUserVerified,
+          animationDuration: animationDuration,
+        ),
       ),
     ),
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  int durationVal = 1;
-
-  bool isVerifyUser = false;
-  Future<int> getDuration() async {
-    final val = await AnimationServices().getAnimationDuration();
-    setState(() {
-      durationVal = val;
-    });
-    return val;
-  }
-
-  void verify() async {
-    final result = await AuthServices.isEmailVerified();
-    if (result) {
-      setState(() {
-        isVerifyUser = true;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    verify();
-    getDuration();
-    LocalNotification().requestPermission();
-  }
+class MyApp extends StatelessWidget {
+  final bool isUserVerified;
+  final int animationDuration;
+  const MyApp({
+    super.key,
+    required this.isUserVerified,
+    required this.animationDuration,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +63,10 @@ class _MyAppState extends State<MyApp> {
       title: 'Mediation Center',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      routerConfig:
-          AppRouting(duration: durationVal, isVerify: isVerifyUser).appRouter,
+      routerConfig: AppRouting(
+        duration: animationDuration,
+        isVerify: isUserVerified,
+      ).appRouter,
       builder: EasyLoading.init(),
     );
   }
