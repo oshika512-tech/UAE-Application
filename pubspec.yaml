@@ -58,6 +58,7 @@ dependencies:
   saver_gallery: ^4.0.1
   device_info_plus: ^11.3.0
   shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
   
 
   

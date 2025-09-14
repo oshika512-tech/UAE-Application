@@ -1,11 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
 class PostCardComponents {
-  
-
-static 
-  Widget imageCard(
+  static Widget imageCard(
     BuildContext context,
     bool lastChild,
     int length,
@@ -17,22 +15,27 @@ static
           ? MainAxisAlignment.center
           : MainAxisAlignment.spaceBetween,
       children: [
-        Image.network(
-          imageUrl1,
+        CachedNetworkImage(
+          fit: BoxFit.cover,
           width: length == 1
               ? MediaQuery.of(context).size.width * 0.85
               : MediaQuery.of(context).size.width * 0.43,
           height: length == 1 ? null : 150,
-          fit: BoxFit.cover,
+          imageUrl: imageUrl1,
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          placeholder: (context, url) =>  Icon(Icons.downloading_rounded),
         ),
         imageUrl2 != "null"
             ? Stack(
                 children: [
-                  Image.network(
-                    imageUrl2,
+                  CachedNetworkImage(
+                    imageUrl: imageUrl2,
                     width: MediaQuery.of(context).size.width * 0.43,
                     height: 150,
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    placeholder: (context, url) =>  Icon(Icons.downloading_rounded),
                   ),
                   lastChild && length > 4
                       ? Container(
@@ -58,7 +61,7 @@ static
       ],
     );
   }
-  
+
   static Widget actionBtn(
     BuildContext context,
     IconData icon,
@@ -98,6 +101,4 @@ static
       ),
     );
   }
-
-
 }

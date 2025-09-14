@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
@@ -67,7 +68,6 @@ class _PostViewerState extends State<PostViewer> {
                   ),
                   onSelected: (value) async {
                     if (value == 1) {
-                       
                       DownloadServices().saveGif(
                         widget.imagesList[index],
                         "image.${DateTime.now()}",
@@ -107,9 +107,13 @@ class _PostViewerState extends State<PostViewer> {
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.width * 1.9,
                 child: Center(
-                  child: Image.network(
-                    widget.imagesList[index],
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imagesList[index],
                     fit: BoxFit.contain,
+                    placeholder: (context, url) =>
+                        Icon(Icons.downloading_rounded),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
               ),
