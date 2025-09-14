@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
 import 'package:meditation_center/core/constans/app.constans.dart';
 import 'package:meditation_center/core/popup/popup.window.dart';
+import 'package:meditation_center/core/shimmer/account.shimmer.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/components/user.card.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
@@ -31,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     context.goNamed(
       'login',
     );
-    EasyLoading.dismiss();
+
     EasyLoading.showSuccess('Logged out successfully!');
   }
 
@@ -92,11 +93,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           // loading user data
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            LoadingPopup.show('Logging...');
+                            AccountPageShimmer();
                           }
                           // has user data
                           if (snapshot.hasData) {
-                            EasyLoading.dismiss();
                             final user = snapshot.data as UserModel;
 
                             return Column(
@@ -180,7 +180,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         context.pop();
                                       },
                                     );
-                                     
                                   },
                                 ),
                                 Spacer(),
@@ -189,12 +188,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
-                                      .copyWith(color: AppColors.whiteColor),
+                                      .copyWith(
+                                        color: AppColors.whiteColor,
+                                      ),
                                 ),
                               ],
                             );
                           }
-                          return SizedBox.shrink();
+                          return AccountPageShimmer();
                         },
                       ),
                     ),

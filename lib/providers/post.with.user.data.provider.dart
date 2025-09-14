@@ -92,4 +92,12 @@ Stream<PostWithUsersModel?> getPostDetailsById(String postId) {
   });
 }
 
+
+// Manual refresh trigger
+  Future<void> refreshPost(String postId) async {
+     getAllPosts();
+    notifyListeners();
+  }
+
+
 }

@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
-import 'package:meditation_center/core/alerts/loading.popup.dart';
+import 'package:meditation_center/core/shimmer/notification.shimmer.dart';
 import 'package:meditation_center/data/models/notification.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/notification.card.dart';
@@ -25,15 +24,13 @@ class NotificationPage extends StatelessWidget {
           builder: (context, snapshot) {
             // error  getting notifications
             if (snapshot.hasError) {
-              EasyLoading.dismiss();
               AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
             }
             // loading data
             if (snapshot.connectionState == ConnectionState.waiting) {
-              LoadingPopup.show('Logging...');
+              NotificationShimmer();
             }
             if (snapshot.hasData) {
-              EasyLoading.dismiss();
               if (snapshot.data!.isEmpty) {
                 return EmptyAnimation(title: "No notifications yet !");
               }
@@ -63,7 +60,6 @@ class NotificationPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                   
                   Expanded(
                     child: SingleChildScrollView(
                       child: ListView.builder(
@@ -76,7 +72,6 @@ class NotificationPage extends StatelessWidget {
                             title: notifications[index].title,
                             body: notifications[index].body,
                             time: notifications[index].dateTime.toString(),
-                            
                           );
                         },
                       ),
@@ -85,7 +80,7 @@ class NotificationPage extends StatelessWidget {
                 ],
               );
             }
-            return SizedBox.shrink();
+            return NotificationShimmer();
           },
         ),
       ),

@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
-import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/popup/popup.window.dart';
+import 'package:meditation_center/core/shimmer/upload.shimmer.dart';
 import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/presentation/components/app.buttons.dart';
 import 'package:meditation_center/presentation/pages/upload/widgets/post_upload_ui.dart';
@@ -107,16 +106,14 @@ class _UploadPageState extends State<UploadPage> {
           builder: (context, snapshot) {
             // error getting user
             if (snapshot.hasError) {
-              EasyLoading.dismiss();
               AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
             }
             // loading user data
             if (snapshot.connectionState == ConnectionState.waiting) {
-              LoadingPopup.show('Logging...');
+              UploadPageShimmer();
             }
             if (snapshot.hasData) {
               final user = snapshot.data as UserModel;
-              EasyLoading.dismiss();
 
               return Column(
                 children: [
@@ -224,7 +221,7 @@ class _UploadPageState extends State<UploadPage> {
                 ],
               );
             } else {
-              return const SizedBox.shrink();
+              return UploadPageShimmer();
             }
           },
         ),

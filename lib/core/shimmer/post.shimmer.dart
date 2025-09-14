@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PostLoadingCard extends StatelessWidget {
-  const PostLoadingCard({super.key});
+class PostShimmer extends StatelessWidget {
+  const PostShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -21,7 +21,7 @@ class PostLoadingCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    width: 40,
+                    width: 50,
                     height: 40,
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -30,7 +30,7 @@ class PostLoadingCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Container(
-                    width: 120,
+                    width: 130,
                     height: 14,
                     decoration: BoxDecoration(
                       color: Colors.white,

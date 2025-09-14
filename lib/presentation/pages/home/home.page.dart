@@ -6,7 +6,7 @@ import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/post.card.dart';
-import 'package:meditation_center/presentation/components/post.loading.card.dart';
+import 'package:meditation_center/core/shimmer/post.shimmer.dart';
 import 'package:meditation_center/providers/post.with.user.data.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
             // Loading
             if (snapshot.connectionState == ConnectionState.waiting) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                PostLoadingCard();
+                PostShimmer();
               });
               return const SizedBox.shrink();
             }

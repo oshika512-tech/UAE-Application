@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/components/post.card.Components.dart';
 import 'package:meditation_center/presentation/components/post.card.user.info.dart';
-import 'package:meditation_center/presentation/components/post.loading.card.dart';
+import 'package:meditation_center/core/shimmer/post.shimmer.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/providers/post.provider.dart';
@@ -58,7 +58,7 @@ class _PostCardState extends State<PostCard> {
             builder: (context, snapshot) {
               // First time load only
               if (!snapshot.hasData) {
-                return const PostLoadingCard();
+                return const PostShimmer();
               }
 
               if (snapshot.hasError) {
@@ -82,7 +82,7 @@ class _PostCardState extends State<PostCard> {
 
               final postData = snapshot.data!;
 
-              // Local UI update for like/comment counts
+              // Local UI update  
               numOfLikes = postData.post.likes;
               numOfComments = postData.post.comments;
 
