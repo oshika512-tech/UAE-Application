@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/pages/account%20settings/account.settings.dart';
 import 'package:meditation_center/presentation/pages/animation%20settings/animation.settings.dart';
+import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/presentation/pages/help%20and%20supports/help.and.support.dart';
 import 'package:meditation_center/presentation/pages/post%20viewer/post.viewer.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/create.screen.dart';
@@ -103,6 +104,15 @@ class AppRouting {
           builder: (context, state) {
             final imagesList = state.extra as List<String>;
             return PostViewer(imagesList: imagesList);
+          },
+        ),
+        // no - animation
+        GoRoute(
+          path: "/comment",
+          name: "comment",
+          builder: (context, state) {
+            final postID = state.extra as String;
+            return CommentPage(postID:postID);
           },
         ),
       ],

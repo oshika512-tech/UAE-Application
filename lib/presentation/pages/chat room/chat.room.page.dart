@@ -21,7 +21,14 @@ class ChatRoomPage extends StatelessWidget {
               reverse: true,
               itemCount: comments.length,
               itemBuilder: (context, index) {
-                return CommentCard(isNotCurrentUser: comments[index]);
+                return CommentCard(
+                  isNotCurrentUser: comments[index],
+                  commentID: "",
+                   
+                  userID: "",
+                  body: "",
+                  dateTime: DateTime.now(),
+                );
               },
             ),
           ),

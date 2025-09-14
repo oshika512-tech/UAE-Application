@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/components/post.card.Components.dart';
 import 'package:meditation_center/presentation/components/post.card.user.info.dart';
 import 'package:meditation_center/core/shimmer/post.shimmer.dart';
-import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/post.with.user.data.provider.dart';
@@ -82,7 +81,7 @@ class _PostCardState extends State<PostCard> {
 
               final postData = snapshot.data!;
 
-              // Local UI update  
+              // Local UI update
               numOfLikes = postData.post.likes;
               numOfComments = postData.post.comments;
 
@@ -219,7 +218,7 @@ class _PostCardState extends State<PostCard> {
                           "Comment",
                           false,
                           () {
-                            CommentPage.bottomSheet(context);
+                            (context).push('/comment', extra: widget.postID);
                           },
                         ),
                         PostCardComponents.actionBtn(
