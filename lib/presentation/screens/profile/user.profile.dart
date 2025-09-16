@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
@@ -24,12 +25,24 @@ class _UserProfileState extends State<UserProfile> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<PostWithUsersModel>> _postsFuture;
 
+  final cUser = FirebaseAuth.instance.currentUser!.uid;
+
   String userName = "";
   String userEmail = "";
   String userImage = "";
 
   int allComments = 0;
   int allLikes = 0;
+
+  bool isCUser = false;
+
+  void checkUser() async {
+    if (widget.userID == cUser) {
+      setState(() {
+        isCUser = true;
+      });
+    }
+  }
 
   loadUser() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -62,6 +75,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
     loadUser();
+    checkUser();
     _loadPosts();
   }
 
@@ -199,6 +213,7 @@ class _UserProfileState extends State<UserProfile> {
                         color: AppColors.gray.withOpacity(0.1),
                       ),
                       child: PostCard(
+                        isCUser: isCUser,
                         isHome: false,
                         postID: postData[index].post.id,
                       ),

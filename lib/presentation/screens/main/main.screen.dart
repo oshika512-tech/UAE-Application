@@ -16,8 +16,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final cUSer = FirebaseAuth.instance.currentUser!.uid;
   validateUser() {
-    final currentUser = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
       context.push('/login');
     }
@@ -43,19 +44,33 @@ class _MainScreenState extends State<MainScreen> {
               title: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  'Mediation center',
+                  'Mediation Center',
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: AppColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                  
                 ),
               ),
               actions: [
+                IconButton(
+                  onPressed: () {
+                    context.push('/profile', extra: cUSer);
+                  },
+                  icon: Icon(Icons.account_circle),
+                  color: AppColors.whiteColor,
+                  iconSize: 30,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
                     onPressed: () {
                       context.push('/settings');
                     },
-                    icon: Icon(Icons.account_circle),
+                    icon: Icon(Icons.settings),
                     color: AppColors.whiteColor,
-                    iconSize: 40,
+                    iconSize: 30,
                   ),
                 ),
               ],
@@ -80,7 +95,6 @@ class _MainScreenState extends State<MainScreen> {
                 HomePage(),
                 // notice page
                 NoticePage(),
-                
 
                 // PostPage
                 UploadPage(),

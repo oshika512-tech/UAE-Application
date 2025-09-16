@@ -13,10 +13,12 @@ import 'package:provider/provider.dart';
 class PostCard extends StatefulWidget {
   final String postID;
   final bool isHome;
+  final bool isCUser;
   const PostCard({
     super.key,
     required this.postID,
     required this.isHome,
+    required this.isCUser,
   });
 
   @override
@@ -104,19 +106,26 @@ class _PostCardState extends State<PostCard>
                           time: postData.post.dateTime,
                         )
                       : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                DatetimeCalculate.timeAgo(postData.post.dateTime),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: widget.isCUser
+                                ? MainAxisAlignment.spaceBetween
+                                : MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                DatetimeCalculate.timeAgo(
+                                    postData.post.dateTime),
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
-                        
-                              Icon(Icons.more_vert_rounded,size: 20,),
-                          ],
+                              widget.isCUser
+                                  ? Icon(
+                                      Icons.more_vert_rounded,
+                                      size: 20,
+                                    )
+                                  : SizedBox.shrink(),
+                            ],
+                          ),
                         ),
-                      ),
 
                   const SizedBox(height: 10),
                   Padding(

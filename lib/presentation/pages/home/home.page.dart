@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
@@ -20,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   late Future<List<PostWithUsersModel>> _postsFuture;
+  final cUser = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -96,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                   color: AppColors.gray.withOpacity(0.1),
                 ),
                 child: PostCard(
+                  isCUser: posts[index].user.uid == cUser,
                   isHome:true,
                   postID: post.post.id,
                 ),
