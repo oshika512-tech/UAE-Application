@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/pages/booking/booking.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
+import 'package:meditation_center/presentation/pages/notice/notice.page.dart';
 import 'package:meditation_center/presentation/pages/notification/notification.page.dart';
 import 'package:meditation_center/presentation/pages/upload/page/upload.page.dart';
-import 'package:meditation_center/presentation/pages/chat%20room/chat.room.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
 class MainScreen extends StatefulWidget {
@@ -78,8 +78,9 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 // HomePage
                 HomePage(),
-                // PlaylistPage
-                ChatRoomPage(),
+                // notice page
+                NoticePage(),
+                
 
                 // PostPage
                 UploadPage(),

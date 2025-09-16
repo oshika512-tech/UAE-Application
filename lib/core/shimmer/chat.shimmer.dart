@@ -3,7 +3,7 @@ import 'package:shimmer/shimmer.dart';
 
 class ChatInboxShimmer extends StatelessWidget {
   final int itemCount;
-  const ChatInboxShimmer({Key? key, this.itemCount = 15}) : super(key: key);
+  const ChatInboxShimmer({super.key, this.itemCount = 15});
 
   @override
   Widget build(BuildContext context) {

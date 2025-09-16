@@ -6,55 +6,57 @@ import 'package:meditation_center/data/models/user.model.dart';
 
 class PostWithUserDataProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-Stream<List<PostWithUsersModel>> getAllPosts() {
-  return _firestore.collection('posts').snapshots().asyncMap((postSnapshot) async {
-    // 1. Map posts
-    final posts = postSnapshot.docs.map((doc) {
-      final data = doc.data();
-      return PostModel.fromJson(data);
-    }).toList();
 
-    if (posts.isEmpty) return [];
+  
+Future<List<PostWithUsersModel>> getAllPosts() async {
+  // 1. Fetch posts
+  final postSnapshot = await _firestore.collection('posts').get();
 
-    // 2. Collect unique userIds
-    final userIds = posts.map((p) => p.userId).toSet().toList();
+  final posts = postSnapshot.docs.map((doc) {
+    final data = doc.data();
+    return PostModel.fromJson(data);
+  }).toList();
 
-    // 3. Batch fetch users
-    final userSnapshot = await _firestore
-        .collection('users')
-        .where('uid', whereIn: userIds)
-        .get();
+  if (posts.isEmpty) return [];
 
-    final users = {
-      for (var doc in userSnapshot.docs)
-        doc['uid']: UserModel.fromJson({...doc.data(), 'id': doc.id})
-    };
+  // 2. Collect unique userIds
+  final userIds = posts.map((p) => p.userId).toSet().toList();
 
-    // 4. Map posts to PostWithUsers
-    final postWithUsers = posts.map((post) {
-      final user = users[post.userId];
-      if (user != null) {
-        return PostWithUsersModel(post: post, user: user);
-      } else {
-        return PostWithUsersModel(
-          post: post,
-          user: UserModel(
-            id: null,
-            name: 'Unknown',
-            email: '',
-            uid: '',
-            profileImage: '',
-            isAdmin: false,
-          ),
-        );
-      }
-    }).toList();
+  // 3. Batch fetch users
+  final userSnapshot = await _firestore
+      .collection('users')
+      .where('uid', whereIn: userIds)
+      .get();
 
-    // 5. Sort by dateTime
-    postWithUsers.sort((a, b) => b.post.dateTime.compareTo(a.post.dateTime));
+  final users = {
+    for (var doc in userSnapshot.docs)
+      doc['uid']: UserModel.fromJson({...doc.data(), 'id': doc.id})
+  };
 
-    return postWithUsers;
-  });
+  // 4. Map posts to PostWithUsers
+  final postWithUsers = posts.map((post) {
+    final user = users[post.userId];
+    if (user != null) {
+      return PostWithUsersModel(post: post, user: user);
+    } else {
+      return PostWithUsersModel(
+        post: post,
+        user: UserModel(
+          id: null,
+          name: 'Unknown',
+          email: '',
+          uid: '',
+          profileImage: '',
+          isAdmin: false,
+        ),
+      );
+    }
+  }).toList();
+
+  // 5. Sort by dateTime
+  postWithUsers.sort((a, b) => b.post.dateTime.compareTo(a.post.dateTime));
+
+  return postWithUsers;
 }
 
 
@@ -94,10 +96,7 @@ Stream<PostWithUsersModel?> getPostDetailsById(String postId) {
 
 
 // Manual refresh trigger
-  Future<void> refreshPost(String postId) async {
-     getAllPosts();
-    notifyListeners();
-  }
+   
 
 
 }

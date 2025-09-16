@@ -20,7 +20,8 @@ class PostCard extends StatefulWidget {
   State<PostCard> createState() => _PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _PostCardState extends State<PostCard>
+with AutomaticKeepAliveClientMixin {
   bool isMore = false;
   bool isLiked = false;
   int numOfLikes = 0;
@@ -34,6 +35,8 @@ class _PostCardState extends State<PostCard> {
       isLiked = status;
     });
   }
+ @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -44,6 +47,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final postWithUserDataProvider =
         Provider.of<PostWithUserDataProvider>(context, listen: false);
     final postProvider = Provider.of<PostProvider>(context, listen: false);
@@ -237,11 +241,7 @@ class _PostCardState extends State<PostCard> {
             },
           ),
         ),
-        Container(
-          height: 10,
-          width: double.infinity,
-          color: AppColors.gray.withOpacity(0.1),
-        ),
+         
       ],
     );
   }

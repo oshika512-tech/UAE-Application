@@ -11,6 +11,7 @@ import 'package:meditation_center/presentation/screens/auth/screens/forgot.passw
 import 'package:meditation_center/presentation/screens/auth/screens/login.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/verify.screen.dart';
 import 'package:meditation_center/presentation/screens/main/main.screen.dart';
+import 'package:meditation_center/presentation/screens/profile/user.profile.dart';
 import 'package:meditation_center/presentation/screens/settings/settings.screen.dart';
 import 'package:meditation_center/presentation/screens/splash/splash.screen.dart';
 
@@ -28,7 +29,8 @@ class AppRouting {
           ? (isVerify ? '/main' : '/verify')
           : '/',
 
-      // initialLocation: '/account_settings',
+
+      // initialLocation: '/profile',
       routes: [
         _route(
           '/',
@@ -98,6 +100,13 @@ class AppRouting {
           'help_and_support',
           false,
           HelpAndSupport(),
+          duration,
+        ),
+        _route(
+          '/profile',
+          'profile',
+          true,
+          UserProfile(),
           duration,
         ),
         // no - animation

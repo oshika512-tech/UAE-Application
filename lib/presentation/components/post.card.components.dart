@@ -22,20 +22,28 @@ class PostCardComponents {
               : MediaQuery.of(context).size.width * 0.43,
           height: length == 1 ? null : 150,
           imageUrl: imageUrl1,
+          cacheKey: imageUrl1,
+          fadeInDuration: Duration.zero,
+          fadeOutDuration: Duration.zero,
           errorWidget: (context, url, error) => const Icon(Icons.error),
-          placeholder: (context, url) =>  Icon(Icons.downloading_rounded),
+          placeholder: (context, url) => Icon(Icons.downloading_rounded),
         ),
         imageUrl2 != "null"
             ? Stack(
                 children: [
                   CachedNetworkImage(
                     imageUrl: imageUrl2,
+                    cacheKey: imageUrl2,
+                    fadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    
                     width: MediaQuery.of(context).size.width * 0.43,
                     height: 150,
                     fit: BoxFit.cover,
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
-                    placeholder: (context, url) =>  Icon(Icons.downloading_rounded),
+                    placeholder: (context, url) =>
+                        Icon(Icons.downloading_rounded),
                   ),
                   lastChild && length > 4
                       ? Container(

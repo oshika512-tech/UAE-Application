@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/constance/app.constance.dart';
 import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
@@ -19,10 +20,25 @@ class PostCardUserInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 25,
-          backgroundImage: NetworkImage(
-            userImage != "" ? userImage : AppData.baseUserUrl,
+        GestureDetector(
+          onTap: (){
+            // navigate to user profile
+            context.push('/profile');
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: AppColors.primaryColor,
+                width: 2,
+              ),
+            ),
+            child: CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(
+                userImage != "" ? userImage : AppData.baseUserUrl,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 10),

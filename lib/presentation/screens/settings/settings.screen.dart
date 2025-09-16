@@ -7,9 +7,9 @@ import 'package:meditation_center/core/constance/app.constance.dart';
 import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/core/shimmer/account.shimmer.dart';
 import 'package:meditation_center/data/models/user.model.dart';
-import 'package:meditation_center/presentation/components/user.card.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/presentation/components/user.data.card.dart';
 import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
@@ -105,37 +105,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.01),
-                                UserCard(
+                                UserDataCard(
+                                  isDarkText: false,
                                   imageUrl: user.profileImage,
-                                  isEdit: false,
-                                  selectImage: () {},
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.01),
-                                Text(
-                                  user.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                ),
-                                Text(
-                                  user.email,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.whiteColor,
-                                      ),
+                                  name: user.name,
+                                  email: user.email,
                                 ),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *

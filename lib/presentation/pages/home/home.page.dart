@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
-  late Stream<List<PostWithUsersModel>> _postsFuture;
+  late Future<List<PostWithUsersModel>> _postsFuture;
 
   @override
   void initState() {
@@ -47,57 +47,61 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: RefreshIndicator(
-        backgroundColor: AppColors.whiteColor,
-        color: AppColors.primaryColor,
-        onRefresh: _refreshPosts,
-        child: StreamBuilder<List<PostWithUsersModel>>(
-          stream: _postsFuture,
-          builder: (context, snapshot) {
-            // Error
-            if (snapshot.hasError) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                EasyLoading.dismiss();
-                AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
-              });
-              return Center(
-                child: EmptyAnimation(title: "Error loading posts !"),
-              );
-            }
-
-            // Loading
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                PostShimmer();
-              });
-              return const SizedBox.shrink();
-            }
-
+    return RefreshIndicator(
+      backgroundColor: AppColors.whiteColor,
+      color: AppColors.primaryColor,
+      onRefresh: _refreshPosts,
+      child: FutureBuilder<List<PostWithUsersModel>>(
+        future: _postsFuture,
+        builder: (context, snapshot) {
+          // Error
+          if (snapshot.hasError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               EasyLoading.dismiss();
+              AppTopSnackbar.showTopSnackBar(context, "Something went wrong");
             });
-
-            final posts = snapshot.data ?? [];
-
-            if (posts.isEmpty) {
-              return const EmptyAnimation(title: "No posts yet!");
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return PostCard(
-                  postID: post.post.id,
-                );
-              },
+            return Center(
+              child: EmptyAnimation(title: "Error loading posts !"),
             );
-          },
-        ),
+          }
+
+          // Loading
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              PostShimmer();
+            });
+            return const SizedBox.shrink();
+          }
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            EasyLoading.dismiss();
+          });
+
+          final posts = snapshot.data ?? [];
+
+          if (posts.isEmpty) {
+            return const EmptyAnimation(title: "No posts yet!");
+          }
+
+          return ListView.builder(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: posts.length,
+             cacheExtent: 1000, 
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.gray.withOpacity(0.1),
+                ),
+                child: PostCard(
+                  postID: post.post.id,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

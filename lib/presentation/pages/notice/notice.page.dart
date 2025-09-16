@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meditation_center/presentation/components/app.input.dart';
 import 'package:meditation_center/presentation/components/comment.card.dart';
 
-class ChatRoomPage extends StatelessWidget {
-  const ChatRoomPage({super.key});
+class NoticePage extends StatelessWidget {
+  const NoticePage({super.key});
 
   @override
   Widget build(BuildContext context) {
