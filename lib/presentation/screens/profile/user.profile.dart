@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
+import 'package:meditation_center/core/shimmer/user.account.shimmer.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/data/models/posts.with.users.model.dart';
+import 'package:meditation_center/presentation/components/empty.animation.dart';
+import 'package:meditation_center/presentation/components/post.card.dart';
 import 'package:meditation_center/presentation/components/user.data.card.dart';
+import 'package:meditation_center/providers/post.with.user.data.provider.dart';
+import 'package:meditation_center/providers/user.provider.dart';
+import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
+  final String userID;
+
+  const UserProfile({super.key, required this.userID});
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -12,7 +22,49 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   final ScrollController _scrollController = ScrollController();
-  // late Stream<List<PostWithUsersModel>> _postsFuture;
+  late Future<List<PostWithUsersModel>> _postsFuture;
+
+  String userName = "";
+  String userEmail = "";
+  String userImage = "";
+
+  int allComments = 0;
+  int allLikes = 0;
+
+  loadUser() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = await userProvider.getUserById(widget.userID);
+    if (user.name.isNotEmpty && user.email.isNotEmpty) {
+      setState(() {
+        userName = user.name;
+        userEmail = user.email;
+        userImage = user.profileImage;
+      });
+    } else {
+      AppTopSnackbar.showTopSnackBar(context, " Error loading user data");
+      context.pop();
+    }
+  }
+
+  void _loadPosts() {
+    final provider =
+        Provider.of<PostWithUserDataProvider>(context, listen: false);
+    _postsFuture = provider.getPostsByUserId(widget.userID);
+  }
+
+  Future<void> _refreshPosts() async {
+    _loadPosts();
+    setState(() {});
+    await _postsFuture;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+    _loadPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
@@ -31,87 +83,171 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ),
       ),
-      body: Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Center(
-                      child: SizedBox(
-                        width: size.width * 0.7,
-                        child: UserDataCard(
-                          isDarkText: true,
-                          imageUrl: "",
-                          name: "Pamoth Moshika ",
-                          email: "moshika38@gmail.com",
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: size.width * 0.5,
-                      height: size.height * 0.05,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.post_add_sharp,
-                                color: AppColors.whiteColor),
-                            SizedBox(width: 10),
-                            Text(
-                              "posts : 25",
-                              style: theme.bodyMedium!.copyWith(
-                                color: AppColors.whiteColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 60),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Public Posts",
-                          style: theme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(Icons.public),
-                      ],
-                    ),
-                    ListView.builder(
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          width: size.width * 0.8,
-                          height: size.height * 0.5,
-                          decoration: BoxDecoration(
-                            color: AppColors.gray.withOpacity(0.1),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+      body: RefreshIndicator(
+        backgroundColor: AppColors.whiteColor,
+        color: AppColors.primaryColor,
+        onRefresh: _refreshPosts,
+        child: Consumer(
+          builder: (context, PostWithUserDataProvider provider, child) =>
+              FutureBuilder(
+            future: _postsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text("Error loading posts");
+              }
+
+              if (snapshot.hasData) {
+                final posts = snapshot.data as List<PostWithUsersModel>;
+                allComments = posts
+                    .map((e) => e.post.comments)
+                    .reduce((value, element) => value + element);
+                allLikes = posts
+                    .map((e) => e.post.likes)
+                    .reduce((value, element) => value + element);
+
+                return _accountCard(
+                  theme,
+                  size,
+                  posts,
+                  allComments,
+                  allLikes,
+                );
+              }
+
+              return UserProfileShimmer(size: size);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _accountCard(
+    TextTheme theme,
+    Size size,
+    List<PostWithUsersModel> postData,
+    int allComments,
+    int allLikes,
+  ) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          Center(
+            child: SizedBox(
+              width: size.width * 0.7,
+              child: UserDataCard(
+                isDarkText: true,
+                imageUrl: userImage,
+                name: userName,
+                email: userEmail,
               ),
             ),
           ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                itemCard(
+                  Icons.comment,
+                  allComments,
+                ),
+                itemCard(
+                  Icons.thumb_up,
+                  allLikes,
+                ),
+                itemCard(
+                  Icons.post_add,
+                  postData.length,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+          postData.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Public Posts",
+                        style: theme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Icon(Icons.public),
+                    ],
+                  ),
+                )
+              : SizedBox.shrink(),
+          postData.isNotEmpty ? SizedBox(height: 30) : const SizedBox.shrink(),
+          postData.isNotEmpty
+              ? ListView.builder(
+                  controller: _scrollController,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: postData.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      width: size.width * 0.8,
+                      decoration: BoxDecoration(
+                        color: AppColors.gray.withOpacity(0.1),
+                      ),
+                      child: PostCard(
+                        isHome: false,
+                        postID: postData[index].post.id,
+                      ),
+                    );
+                  },
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    EmptyAnimation(title: "No posts yet !"),
+                  ],
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget itemCard(
+    IconData icon,
+    int number,
+  ) {
+    final tt = Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 15);
+    return Container(
+      width: 110,
+      height: 80,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppColors.secondaryColor,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 25,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              number.toString(),
+              style: tt,
+            ),
+          ],
         ),
       ),
     );

@@ -95,8 +95,54 @@ Stream<PostWithUsersModel?> getPostDetailsById(String postId) {
 }
 
 
-// Manual refresh trigger
-   
+ 
+   Future<List<PostWithUsersModel>> getPostsByUserId(String userId) async {
+  // 1. Fetch posts for the given userId
+  final postSnapshot = await _firestore
+      .collection('posts')
+      .where('userId', isEqualTo: userId)
+      .get();
+
+  final posts = postSnapshot.docs.map((doc) {
+    final data = doc.data();
+    return PostModel.fromJson(data);
+  }).toList();
+
+  if (posts.isEmpty) return [];
+
+  // 2. Fetch user (only one user, since all posts belong to this userId)
+  final userSnapshot = await _firestore
+      .collection('users')
+      .where('uid', isEqualTo: userId)
+      .limit(1)
+      .get();
+
+  UserModel user;
+  if (userSnapshot.docs.isNotEmpty) {
+    final uDoc = userSnapshot.docs.first;
+    user = UserModel.fromJson({...uDoc.data(), 'id': uDoc.id});
+  } else {
+    user = UserModel(
+      id: null,
+      name: 'Unknown',
+      email: '',
+      uid: '',
+      profileImage: '',
+      isAdmin: false,
+    );
+  }
+
+  // 3. Map posts with the user
+  final postWithUsers = posts.map((post) {
+    return PostWithUsersModel(post: post, user: user);
+  }).toList();
+
+  // 4. Sort by dateTime (latest first)
+  postWithUsers.sort((a, b) => b.post.dateTime.compareTo(a.post.dateTime));
+
+  return postWithUsers;
+}
+
 
 
 }

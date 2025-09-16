@@ -32,6 +32,9 @@ class UserProvider extends ChangeNotifier {
     return UserModel.fromJson(snapshot.data()!);
   }
 
+ 
+
+
 // cloudinary upload image
   Future<bool> uploadUserProfileImage(
     XFile imagePath,

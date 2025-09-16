@@ -165,6 +165,7 @@ class PostProvider extends ChangeNotifier {
         'likes': likes + 1,
         'likedUsersIds': likedUsers,
       });
+      notifyListeners();
     });
   }
 
@@ -190,6 +191,7 @@ class PostProvider extends ChangeNotifier {
         'likes': likes > 0 ? likes - 1 : 0,
         'likedUsersIds': likedUsers,
       });
+      notifyListeners();
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meditation_center/core/datetime/datetime.calculate.dart';
 import 'package:meditation_center/presentation/components/post.card.Components.dart';
 import 'package:meditation_center/presentation/components/post.card.user.info.dart';
 import 'package:meditation_center/core/shimmer/post.shimmer.dart';
@@ -11,9 +12,11 @@ import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   final String postID;
+  final bool isHome;
   const PostCard({
     super.key,
     required this.postID,
+    required this.isHome,
   });
 
   @override
@@ -21,7 +24,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard>
-with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   bool isMore = false;
   bool isLiked = false;
   int numOfLikes = 0;
@@ -35,7 +38,8 @@ with AutomaticKeepAliveClientMixin {
       isLiked = status;
     });
   }
- @override
+
+  @override
   bool get wantKeepAlive => true;
 
   @override
@@ -92,11 +96,27 @@ with AutomaticKeepAliveClientMixin {
               return Column(
                 children: [
                   // user info
-                  PostCardUserInfo(
-                    userName: postData.user.name,
-                    userImage: postData.user.profileImage,
-                    time: postData.post.dateTime,
-                  ),
+                  widget.isHome
+                      ? PostCardUserInfo(
+                          userId: postData.user.uid,
+                          userName: postData.user.name,
+                          userImage: postData.user.profileImage,
+                          time: postData.post.dateTime,
+                        )
+                      : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                DatetimeCalculate.timeAgo(postData.post.dateTime),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                        
+                              Icon(Icons.more_vert_rounded,size: 20,),
+                          ],
+                        ),
+                      ),
 
                   const SizedBox(height: 10),
                   Padding(
@@ -241,7 +261,6 @@ with AutomaticKeepAliveClientMixin {
             },
           ),
         ),
-         
       ],
     );
   }

@@ -102,12 +102,14 @@ class AppRouting {
           HelpAndSupport(),
           duration,
         ),
-        _route(
-          '/profile',
-          'profile',
-          true,
-          UserProfile(),
-          duration,
+        // no - animation
+        GoRoute(
+          path: "/profile",
+          name: "profile",
+          builder: (context, state) {
+            final userID = state.extra as String;
+            return UserProfile(userID: userID);
+          },
         ),
         // no - animation
         GoRoute(

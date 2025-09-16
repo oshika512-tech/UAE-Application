@@ -20,7 +20,7 @@ class PostCardComponents {
           width: length == 1
               ? MediaQuery.of(context).size.width * 0.85
               : MediaQuery.of(context).size.width * 0.43,
-          height: length == 1 ? null : 150,
+          height: length == 1 ? null : 200,
           imageUrl: imageUrl1,
           cacheKey: imageUrl1,
           fadeInDuration: Duration.zero,

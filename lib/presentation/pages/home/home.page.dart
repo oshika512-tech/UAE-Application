@@ -96,6 +96,7 @@ class _HomePageState extends State<HomePage> {
                   color: AppColors.gray.withOpacity(0.1),
                 ),
                 child: PostCard(
+                  isHome:true,
                   postID: post.post.id,
                 ),
               );
