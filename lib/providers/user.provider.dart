@@ -28,7 +28,6 @@ class UserProvider extends ChangeNotifier {
   // get user by id
   Future<UserModel> getUserById(String id) async {
     final snapshot = await _firestore.collection('users').doc(id).get();
-
     return UserModel.fromJson(snapshot.data()!);
   }
 

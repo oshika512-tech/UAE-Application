@@ -24,7 +24,7 @@ class NotificationProvider extends ChangeNotifier {
     );
 
     try {
-      // create dummy post
+       
       await docRef.set({...notification.toJson()});
       notifyListeners();
 

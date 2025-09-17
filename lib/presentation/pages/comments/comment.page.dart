@@ -86,8 +86,7 @@ class _CommentPageState extends State<CommentPage> {
                         itemBuilder: (context, index) {
                           final comment = comments[index];
                           return CommentCard(
-                            isNotCurrentUser: true,
-                            commentID: comment.id,
+                             commentID: comment.id,
                             userID: comment.userID,
                             body: comment.body,
                             dateTime: comment.dateTime,

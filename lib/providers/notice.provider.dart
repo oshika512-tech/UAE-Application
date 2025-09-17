@@ -1,0 +1,78 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_sdk/cloudinary_sdk.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
+import 'package:meditation_center/data/models/notice.model.dart';
+
+class NoticeProvider extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // addNewNotice
+  Future<bool> addNewNotice(
+    String title,
+    String body,
+    XFile imagePath,
+  ) async {
+    final docRef = _firestore.collection('notice').doc();
+
+    final notice = NoticeModel(
+      title: title,
+      body: body,
+      mainImage: "",
+      dateTime: DateTime.now(),
+    );
+
+    try {
+      // create dummy notice
+      await docRef.set({...notice.toJson()});
+
+      // upload images to cloudinary
+      final response = await CloudinarySdk.cloudinary.uploadResource(
+        CloudinaryUploadResource(
+          filePath: imagePath.path,
+          resourceType: CloudinaryResourceType.image,
+          folder: "notice",
+          fileName: docRef.id,
+          progressCallback: (count, total) {
+            debugPrint("Uploading... $count/$total");
+          },
+        ),
+      );
+
+      if (response.isSuccessful) {
+        final profileImage = response.secureUrl;
+
+        final updateNotice = NoticeModel(
+          title: title,
+          body: body,
+          mainImage: profileImage.toString(),
+          dateTime: DateTime.now(),
+        );
+
+        // create dummy notice
+        await docRef.update({...updateNotice.toJson()});
+      } else {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      print('Error creating comment: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // get all notices
+  Stream<List<NoticeModel>> getAllNotices() {
+    return _firestore.collection('notice').snapshots().map((querySnapshot) {
+      final notices = querySnapshot.docs
+          .map((doc) => NoticeModel.fromJson(doc.data()))
+          .toList();
+
+      notices.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      return notices;
+    });
+  }
+}

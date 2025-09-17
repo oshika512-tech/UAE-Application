@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/pages/booking/booking.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
-import 'package:meditation_center/presentation/pages/notice/notice.page.dart';
+import 'package:meditation_center/presentation/pages/notice/page/notice.page.dart';
 import 'package:meditation_center/presentation/pages/notification/notification.page.dart';
 import 'package:meditation_center/presentation/pages/upload/page/upload.page.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
                 indicatorColor: AppColors.primaryColor,
                 tabs: [
                   Tab(icon: Icon(Icons.home_rounded, size: 25)),
-                  Tab(icon: Icon(Icons.chat, size: 25)),
+                  Tab(icon: Icon(Icons.newspaper_rounded, size: 25)),
                   Tab(icon: Icon(Icons.add_circle_rounded, size: 25)),
                   Tab(icon: Icon(Icons.calendar_month_rounded, size: 25)),
                   Tab(icon: Icon(Icons.notifications, size: 25)),

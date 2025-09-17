@@ -7,7 +7,7 @@ class CommentProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
-// add new notification
+// add new comment
 
   Future<bool> addNewComment(
     String postID,
@@ -25,7 +25,7 @@ class CommentProvider extends ChangeNotifier {
     );
 
     try {
-      // create dummy post
+     
       await docRef.set({...comment.toJson()});
       updateComment(postID,true);
       notifyListeners();
