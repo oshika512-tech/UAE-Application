@@ -1,20 +1,31 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
+import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/core/shimmer/notice.viewer.shimmer.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/notice.model.dart';
+import 'package:meditation_center/data/models/user.model.dart';
 import 'package:meditation_center/providers/notice.provider.dart';
+import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
 
-class NoticeViewer extends StatelessWidget {
+class NoticeViewer extends StatefulWidget {
   final String noticeID;
   const NoticeViewer({
     super.key,
     required this.noticeID,
   });
 
+  @override
+  State<NoticeViewer> createState() => _NoticeViewerState();
+}
+
+class _NoticeViewerState extends State<NoticeViewer> {
+  final userID = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +49,13 @@ class NoticeViewer extends StatelessWidget {
             size: 20,
           ),
         ),
+        actions: [_actionBtnAppBar()],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Consumer(
           builder: (context, NoticeProvider provider, child) => FutureBuilder(
-            future: provider.getNoticeByID(noticeID),
+            future: provider.getNoticeByID(widget.noticeID),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const NoticeViewerShimmer();
@@ -77,6 +89,54 @@ class NoticeViewer extends StatelessWidget {
               return const NoticeViewerShimmer();
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _actionBtnAppBar() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Consumer2(
+        builder: (context, UserProvider uProvider,NoticeProvider nProvider, child) => FutureBuilder(
+          future: uProvider.getUserById(userID),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final userData = snapshot.data as UserModel;
+
+              return IconButton(
+                onPressed: () {
+                  if (userData.isAdmin) {
+                    // show conform window
+                    PopupWindow.conformImageUploadPopup(
+                      "Conform to delete this  notice, this action cannot be undone",
+                      "Yes, add notice",
+                      context,
+                      () async{
+                        // upload
+                        final status=await nProvider.deleteNotice(widget.noticeID);
+                        if (status) {
+                          EasyLoading.showSuccess("Deleted !",duration: Duration(seconds: 2));
+                        context.pop();
+                        }
+                        context.pop();
+                      },
+                      () {
+                        // cancel
+                        context.pop();
+                      },
+                    );
+                  }
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: AppColors.whiteColor,
+                  size: 20,
+                ),
+              );
+            }
+            return SizedBox.shrink();
+          },
         ),
       ),
     );

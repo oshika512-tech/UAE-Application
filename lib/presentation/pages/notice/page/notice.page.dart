@@ -25,8 +25,7 @@ class _NoticePageState extends State<NoticePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+         children: [
           const SizedBox(height: 5),
           Consumer(
             builder:
@@ -82,7 +81,7 @@ class _NoticePageState extends State<NoticePage> {
 
                 return Expanded(
                   child: ListView.builder(
-                    reverse: true,
+                     
                     itemCount: notices.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
