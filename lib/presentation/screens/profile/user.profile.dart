@@ -166,12 +166,12 @@ class _UserProfileState extends State<UserProfile> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 itemCard(
-                  Icons.comment,
-                  allComments,
-                ),
-                itemCard(
                   Icons.thumb_up,
                   allLikes,
+                ),
+                itemCard(
+                  Icons.comment,
+                  allComments,
                 ),
                 itemCard(
                   Icons.post_add,
@@ -240,7 +240,7 @@ class _UserProfileState extends State<UserProfile> {
     final tt = Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 15);
     return Container(
       width: 110,
-      height: 80,
+      height: 60,
       decoration: BoxDecoration(
         border: Border.all(
           color: AppColors.secondaryColor,
@@ -249,7 +249,7 @@ class _UserProfileState extends State<UserProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Center(
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -257,7 +257,7 @@ class _UserProfileState extends State<UserProfile> {
               icon,
               size: 25,
             ),
-            const SizedBox(height: 5),
+            const SizedBox(width: 10),
             Text(
               number.toString(),
               style: tt,

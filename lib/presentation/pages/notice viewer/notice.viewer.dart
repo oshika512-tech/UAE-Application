@@ -81,7 +81,7 @@ class _NoticeViewerState extends State<NoticeViewer> {
                       ),
                       const SizedBox(height: 20),
                       Text(notice.body,
-                          style: Theme.of(context).textTheme.bodyMedium),
+                          style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),
                 );
