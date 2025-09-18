@@ -85,12 +85,17 @@ class _NoticePageState extends State<NoticePage> {
                     reverse: true,
                     itemCount: notices.length,
                     itemBuilder: (context, index) {
-                      return NoticeCard(
-                        body: notices[index].body,
-                        title: notices[index].title,
-                        date: notices[index].dateTime,
-                        time: notices[index].dateTime.toString(),
-                        mainImage: notices[index].mainImage,
+                      return GestureDetector(
+                        onTap: (){
+                          context.push("/noticeViewer", extra: notices[index].id);
+                        },
+                        child: NoticeCard(
+                          body: notices[index].body,
+                          title: notices[index].title,
+                          date: notices[index].dateTime,
+                          time: notices[index].dateTime.toString(),
+                          mainImage: notices[index].mainImage,
+                        ),
                       );
                     },
                   ),

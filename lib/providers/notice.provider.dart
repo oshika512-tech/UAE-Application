@@ -79,4 +79,24 @@ class NoticeProvider extends ChangeNotifier {
       return notices;
     });
   }
+
+  // Get notice by ID
+  Future<NoticeModel?> getNoticeByID(String noticeID) async {
+  try {
+    final doc = await _firestore.collection('notice').doc(noticeID).get();
+
+    if (doc.exists) {
+      return NoticeModel.fromJson({
+        ...doc.data()!,
+        'id': doc.id,
+      });
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Error fetching notice by ID: $e');
+    return null;
+  }
+}
+
 }

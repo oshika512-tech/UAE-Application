@@ -6,6 +6,7 @@ import 'package:meditation_center/presentation/pages/add%20notice/add.notice.dar
 import 'package:meditation_center/presentation/pages/animation%20settings/animation.settings.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/presentation/pages/help%20and%20supports/help.and.support.dart';
+import 'package:meditation_center/presentation/pages/notice%20viewer/notice.viewer.dart';
 import 'package:meditation_center/presentation/pages/post%20viewer/post.viewer.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/create.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/forgot.password.dart';
@@ -136,6 +137,15 @@ class AppRouting {
           name: "addNotice",
           builder: (context, state) {
             return AddNotice();
+          },
+        ),
+        // no - animation
+        GoRoute(
+          path: "/noticeViewer",
+          name: "noticeViewer",
+          builder: (context, state) {
+            final noticeID = state.extra as String;
+            return NoticeViewer(noticeID: noticeID,);
           },
         ),
       ],
