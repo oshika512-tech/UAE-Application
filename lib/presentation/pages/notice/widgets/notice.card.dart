@@ -1,20 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
+import 'package:meditation_center/presentation/pages/notice/widgets/date.time.cal.dart';
 
 class NoticeCard extends StatefulWidget {
   final String title;
   final String body;
-  final String date;
+  final DateTime date;
   final String time;
   final String mainImage;
-  const NoticeCard(
-      {super.key,
-      required this.title,
-      required this.body,
-      required this.date,
-      required this.time,
-      required this.mainImage});
+  const NoticeCard({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.date,
+    required this.time,
+    required this.mainImage,
+  });
 
   @override
   State<NoticeCard> createState() => _NoticeCardState();
@@ -34,18 +36,19 @@ class _NoticeCardState extends State<NoticeCard> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  widget.date,
+                  DatetimeCal().formatDateOrTime(widget.date, true),
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
-                  widget.time,
+                  DatetimeCal().formatDateOrTime(widget.date, false),
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,15 +93,15 @@ class _NoticeCardState extends State<NoticeCard> {
                   height: 35,
                   child: TextButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(
                         AppColors.gray.withOpacity(0.3),
                       ),
-                      shape: MaterialStateProperty.all(
+                      shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      padding: MaterialStateProperty.all(
+                      padding: WidgetStateProperty.all(
                         EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                       ),
                     ),

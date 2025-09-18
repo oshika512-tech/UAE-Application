@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/shimmer/notice.shimmer.dart';
 import 'package:meditation_center/data/models/notice.model.dart';
 import 'package:meditation_center/data/models/user.model.dart';
@@ -24,7 +25,7 @@ class _NoticePageState extends State<NoticePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 5),
           Consumer(
@@ -43,6 +44,10 @@ class _NoticePageState extends State<NoticePage> {
                           text: "Add new notice",
                           isPrimary: true,
                           icon: Icons.add_box_rounded,
+                          onTap: () {
+                            // go to add new notice page
+                            context.push('/addNotice');
+                          },
                         )
                       : const SizedBox.shrink();
                 }
@@ -57,33 +62,39 @@ class _NoticePageState extends State<NoticePage> {
               stream: noticeProvider.getAllNotices(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return NoticeCardShimmer();
-                  
+                  return const NoticeCardShimmer();
                 }
-                if (snapshot.hasData) {
-                  final notices = snapshot.data as List<NoticeModel>;
 
-                  if (notices.isEmpty) {
-                    return Center(child: EmptyAnimation(title: "No notices yet !"));
-                  }
+                if (snapshot.hasError) {
+                   return const Center(child: Text("Something went wrong!"));
+                }
 
-                  return Expanded(
-                    child: ListView.builder(
-                      reverse: true,
-                      itemCount: notices.length,
-                      itemBuilder: (context, index) {
-                        return NoticeCard(
-                          body: notices[index].body,
-                          title: notices[index].title,
-                          date: notices[index].dateTime.toString(),
-                          time: notices[index].dateTime.toString(),
-                          mainImage: notices[index].mainImage,
-                        );
-                      },
+                if (!snapshot.hasData ||
+                    (snapshot.data as List<NoticeModel>).isEmpty) {
+                  return const Expanded(
+                    child: Center(
+                      child: EmptyAnimation(title: "No notices yet !"),
                     ),
                   );
                 }
-                return NoticeCardShimmer();
+
+                final notices = snapshot.data as List<NoticeModel>;
+
+                return Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: notices.length,
+                    itemBuilder: (context, index) {
+                      return NoticeCard(
+                        body: notices[index].body,
+                        title: notices[index].title,
+                        date: notices[index].dateTime,
+                        time: notices[index].dateTime.toString(),
+                        mainImage: notices[index].mainImage,
+                      );
+                    },
+                  ),
+                );
               },
             ),
           ),

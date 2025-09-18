@@ -20,6 +20,7 @@ class NoticeProvider extends ChangeNotifier {
       title: title,
       body: body,
       mainImage: "",
+      id: docRef.id,
       dateTime: DateTime.now(),
     );
 
@@ -46,13 +47,16 @@ class NoticeProvider extends ChangeNotifier {
         final updateNotice = NoticeModel(
           title: title,
           body: body,
+          id: docRef.id,
           mainImage: profileImage.toString(),
           dateTime: DateTime.now(),
         );
 
         // create dummy notice
         await docRef.update({...updateNotice.toJson()});
+        notifyListeners();
       } else {
+        notifyListeners();
         return false;
       }
 

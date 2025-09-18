@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
-class TextInput {
+class TextFieldInput {
   static Widget textFormField(
     BuildContext context,
     TextEditingController controller,
     bool isEnabled,
+    String? placeHolder,
+    int? maxLine,
   ) {
     return TextFormField(
       autofocus: false,
       enabled: isEnabled,
       controller: controller,
       style: Theme.of(context).textTheme.bodySmall,
-      maxLines: 5,
+      maxLines: maxLine??5,
       decoration: InputDecoration(
-        hintText: 'What\'s on your mind?',
+        hintText: placeHolder??'What\'s on your mind?',
         hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: AppColors.gray,
             ),

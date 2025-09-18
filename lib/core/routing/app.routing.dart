@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/presentation/pages/account%20settings/account.settings.dart';
+import 'package:meditation_center/presentation/pages/add%20notice/add.notice.dart';
 import 'package:meditation_center/presentation/pages/animation%20settings/animation.settings.dart';
 import 'package:meditation_center/presentation/pages/comments/comment.page.dart';
 import 'package:meditation_center/presentation/pages/help%20and%20supports/help.and.support.dart';
@@ -127,6 +128,14 @@ class AppRouting {
           builder: (context, state) {
             final postID = state.extra as String;
             return CommentPage(postID: postID);
+          },
+        ),
+        // no - animation
+        GoRoute(
+          path: "/addNotice",
+          name: "addNotice",
+          builder: (context, state) {
+            return AddNotice();
           },
         ),
       ],

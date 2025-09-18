@@ -10,7 +10,7 @@ import 'package:meditation_center/presentation/components/app.buttons.dart';
 import 'package:meditation_center/presentation/pages/upload/widgets/post_upload_ui.dart';
 import 'package:meditation_center/presentation/pages/upload/widgets/bottom.text.dart';
 import 'package:meditation_center/presentation/pages/upload/widgets/image.card.dart';
-import 'package:meditation_center/presentation/pages/upload/widgets/text.input.dart';
+import 'package:meditation_center/presentation/components/text.input.dart';
 import 'package:meditation_center/providers/notification.provider.dart';
 import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
@@ -118,10 +118,12 @@ class _UploadPageState extends State<UploadPage> {
               return Column(
                 children: [
                   const SizedBox(height: 20),
-                  TextInput.textFormField(
+                  TextFieldInput.textFormField(
                     context,
                     descriptionController,
                     isEnabled,
+                    "What's on your mind?",
+                    5,
                   ),
                   const SizedBox(height: 20),
                   // pick image btn

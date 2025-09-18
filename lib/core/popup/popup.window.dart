@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
- 
+
 class PopupWindow {
   static void conformImageUploadPopup(
     String title,
-    String buttonText, 
+    String buttonText,
     BuildContext context,
     VoidCallback onConfirm,
     VoidCallback onCancel,
@@ -21,9 +21,6 @@ class PopupWindow {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-               
-               
-
               const SizedBox(height: 20),
               Text(
                 title,
@@ -50,17 +47,12 @@ class PopupWindow {
                   ),
                   TextButton(
                     onPressed: onConfirm,
-                    child: Text(
-                     buttonText,
-                      style: theme.textTheme.bodySmall 
-                    ),
+                    child: Text(buttonText, style: theme.textTheme.bodySmall),
                   ),
                 ],
               )
             ],
           ),
-
-           
         );
       },
     );

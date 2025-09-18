@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NoticeModel {
   final String? id;
   final String title;
@@ -6,30 +8,32 @@ class NoticeModel {
   final DateTime dateTime;
 
   NoticeModel({
-      this.id,
+    this.id,
     required this.title,
     required this.body,
     required this.mainImage,
     required this.dateTime,
   });
 
-   factory NoticeModel.fromJson(Map<String, dynamic> json) {
+  factory NoticeModel.fromJson(Map<String, dynamic> json) {
     return NoticeModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      body: json['body'] as String,
-      mainImage: json['mainImage'] as String,
-      dateTime: json['dateTime'] as DateTime,
+      id: json['id'] as String?,
+      title: json['title'] as String? ?? '',
+      body: json['body'] as String? ?? '',
+      mainImage: json['mainImage'] as String? ?? '',
+      dateTime: (json['dateTime'] is Timestamp)
+          ? (json['dateTime'] as Timestamp).toDate()
+          : (json['dateTime'] as DateTime),
     );
   }
 
-   Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
       'body': body,
       'mainImage': mainImage,
-      'dateTime': dateTime,
+      'dateTime': dateTime,  
     };
   }
 }
