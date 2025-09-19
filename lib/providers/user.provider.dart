@@ -15,8 +15,10 @@ class UserProvider extends ChangeNotifier {
         'profileImage': newImageUrl,
       });
       print("Profile image updated successfully");
+      notifyListeners();
       return true;
     } catch (e) {
+      notifyListeners();
       print("Error updating profile image: $e");
       return false;
     }

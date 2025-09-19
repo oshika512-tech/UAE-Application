@@ -44,19 +44,36 @@ class VerifyScreen extends StatelessWidget {
       }
     }
 
+    reSend() async {
+      LoadingPopup.show('Sending...');
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && !user.emailVerified) {
+          await user.sendEmailVerification();
+          print("Verification email sent to ${user.email}");
+          EasyLoading.dismiss();
+          EasyLoading.showSuccess('Sent !', duration: Duration(seconds: 2));
+        }
+      } catch (e) {
+        EasyLoading.dismiss();
+        AppTopSnackbar.showTopSnackBar(context, "Please try again !");
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 22),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Spacer(),
               Icon(
                 Icons.email_outlined,
                 size: 80,
                 color: theme.primaryColor,
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 28),
               Text(
                 'Check your inbox',
                 style: theme.textTheme.bodyLarge,
@@ -80,12 +97,22 @@ class VerifyScreen extends StatelessWidget {
                 },
               ),
               SizedBox(height: 50),
+              GestureDetector(
+                onTap: () {
+                  // resend
+                  reSend();
+                },
+                child: Text(
+                  'Resend',
+                  style: theme.textTheme.bodySmall!
+                      .copyWith(color: theme.primaryColor),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.arrow_forward_ios_rounded,
-                      color: theme.primaryColor, size: 14),
-                  SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
                       context.push('/login');
@@ -96,6 +123,12 @@ class VerifyScreen extends StatelessWidget {
                           .copyWith(color: theme.primaryColor),
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: theme.primaryColor,
+                    size: 14,
                   ),
                 ],
               ),
