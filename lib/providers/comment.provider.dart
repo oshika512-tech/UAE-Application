@@ -25,9 +25,8 @@ class CommentProvider extends ChangeNotifier {
     );
 
     try {
-     
       await docRef.set({...comment.toJson()});
-      updateComment(postID,true);
+      updateComment(postID, docRef.id, true);
       notifyListeners();
 
       return true;
@@ -38,26 +37,26 @@ class CommentProvider extends ChangeNotifier {
     }
   }
 
-/// Fetch comments for a post sorted by dateTime (latest first)
-Stream<List<CommentModel>> getCommentsByPostId(String postID) {
-  return _firestore
-      .collection('comment')
-      .where('postID', isEqualTo: postID)
-      .snapshots()
-      .map((querySnapshot) {
-        final comments = querySnapshot.docs
-            .map((doc) => CommentModel.fromJson(doc.data()))
-            .toList();
-        
-        // Sort by dateTime descending
-        comments.sort((a, b) => b.dateTime.compareTo(a.dateTime));
-        return comments;
-      });
-}
+  /// Fetch comments for a post sorted by dateTime (latest first)
+  Stream<List<CommentModel>> getCommentsByPostId(String postID) {
+    return _firestore
+        .collection('comment')
+        .where('postID', isEqualTo: postID)
+        .snapshots()
+        .map((querySnapshot) {
+      final comments = querySnapshot.docs
+          .map((doc) => CommentModel.fromJson(doc.data()))
+          .toList();
 
+      // Sort by dateTime descending
+      comments.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      return comments;
+    });
+  }
 
   /// update comment count
-  Future<void> updateComment(String postId, bool isAdd) async {
+  Future<void> updateComment(
+      String postId, String commentID, bool isAdd) async {
     final postRef = _firestore.collection('posts').doc(postId);
 
     await _firestore.runTransaction((transaction) async {
@@ -66,14 +65,16 @@ Stream<List<CommentModel>> getCommentsByPostId(String postID) {
       if (!snapshot.exists) return;
 
       final data = snapshot.data() as Map<String, dynamic>;
-      final likes = data['comments'] ?? 0;
+      final comment = data['comments'] ?? 0;
       if (isAdd) {
         transaction.update(postRef, {
-          'comments': likes + 1,
+          'comments': comment + 1,
+          'comments_id': FieldValue.arrayUnion([commentID]),
         });
       } else {
         transaction.update(postRef, {
-          'comments': likes - 1,
+          'comments': comment - 1,
+          'comments_id': FieldValue.arrayRemove([commentID]),
         });
       }
     });

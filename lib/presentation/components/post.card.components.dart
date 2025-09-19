@@ -38,7 +38,7 @@ class PostCardComponents {
                     fadeOutDuration: Duration.zero,
                     
                     width: MediaQuery.of(context).size.width * 0.43,
-                    height: 150,
+                    height: 200,
                     fit: BoxFit.cover,
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),

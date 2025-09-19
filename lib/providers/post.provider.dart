@@ -210,4 +210,37 @@ class PostProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  // delete post
+  Future<bool> deletePost(String postId) async {
+  try {
+    final postRef = _firestore.collection('posts').doc(postId);
+    final snapshot = await postRef.get();
+
+    if (!snapshot.exists) return false;
+
+    final data = snapshot.data() as Map<String, dynamic>;
+    final comments = List<String>.from(data['comments_id'] ?? []);
+
+    WriteBatch batch = _firestore.batch();
+
+    // delete all comments
+    for (var commentId in comments) {
+      final commentRef = _firestore.collection('comment').doc(commentId);
+      batch.delete(commentRef);
+    }
+
+    // delete post itself
+    batch.delete(postRef);
+
+    // commit batch
+    await batch.commit();
+
+    return true;
+  } catch (e) {
+    print("Error deleting post = $e");
+    return false;
+  }
+}
+
 }

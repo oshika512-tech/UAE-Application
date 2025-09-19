@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -10,6 +11,8 @@ import 'package:meditation_center/core/alerts/loading.popup.dart';
 
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
+import 'package:meditation_center/providers/user.provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,7 +23,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool obscureText = true;
-
   bool isEmailError = false;
   bool isEPassError = false;
   TextEditingController emailController = TextEditingController();
@@ -32,10 +34,21 @@ class _LoginScreenState extends State<LoginScreen> {
       isEPassError = passwordController.text.isEmpty;
     });
 
+    Future<bool> isEmailVerified() async {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final check = await userProvider.isUserVerifiedInFirestore(uid);
+      if (check) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     void verify() async {
       LoadingPopup.show('Verifying...');
 
-      final result = await AuthServices.isEmailVerified();
+      final result = await isEmailVerified();
       if (result) {
         context.pushReplacement(
           '/main',
@@ -70,9 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
           AppTopSnackbar.showTopSnackBar(context, "invalid email or password");
           EasyLoading.dismiss();
         } else if (result == 'Successfully') {
-          // context.pushReplacement(
-          //   '/main',
-          // );
           verify();
           EasyLoading.dismiss();
         }

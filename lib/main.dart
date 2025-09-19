@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,7 +8,6 @@ import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:meditation_center/data/services/animation.services.dart';
-import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
 import 'package:meditation_center/providers/comment.provider.dart';
 import 'package:meditation_center/providers/notice.provider.dart';
 import 'package:meditation_center/providers/notification.provider.dart';
@@ -26,8 +26,12 @@ void main() async {
   await LocalNotification().initialize();
 
   // Get verification status and animation duration before running the app
-  final bool isUserVerified = await AuthServices.isEmailVerified();
-  final int animationDuration = await AnimationServices().getAnimationDuration();
+  final user = FirebaseAuth.instance.currentUser;
+  final bool isUserVerified = user != null
+      ? await UserProvider().isUserVerifiedInFirestore(user.uid)
+      : false;
+  final int animationDuration =
+      await AnimationServices().getAnimationDuration();
 
   runApp(
     DevicePreview(

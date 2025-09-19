@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
+import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/shimmer/user.account.shimmer.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/data/models/posts.with.users.model.dart';
 import 'package:meditation_center/presentation/components/empty.animation.dart';
 import 'package:meditation_center/presentation/components/post.card.dart';
 import 'package:meditation_center/presentation/components/user.data.card.dart';
+import 'package:meditation_center/providers/post.provider.dart';
 import 'package:meditation_center/providers/post.with.user.data.provider.dart';
 import 'package:meditation_center/providers/user.provider.dart';
 import 'package:provider/provider.dart';
@@ -112,12 +115,14 @@ class _UserProfileState extends State<UserProfile> {
 
               if (snapshot.hasData) {
                 final posts = snapshot.data as List<PostWithUsersModel>;
-                allComments = posts
-                    .map((e) => e.post.comments)
-                    .reduce((value, element) => value + element);
-                allLikes = posts
-                    .map((e) => e.post.likes)
-                    .reduce((value, element) => value + element);
+                if (posts.isNotEmpty) {
+                  allComments = posts
+                      .map((e) => e.post.comments)
+                      .reduce((value, element) => value + element);
+                  allLikes = posts
+                      .map((e) => e.post.likes)
+                      .reduce((value, element) => value + element);
+                }
 
                 return _accountCard(
                   theme,
@@ -216,6 +221,16 @@ class _UserProfileState extends State<UserProfile> {
                         isCUser: isCUser,
                         isHome: false,
                         postID: postData[index].post.id,
+                        onDelete: () {
+                            
+                          LoadingPopup.show('Deleting...');
+                          final postProvider =
+                              Provider.of<PostProvider>(context, listen: false);
+                          postProvider.deletePost(postData[index].post.id);
+                          EasyLoading.dismiss();
+                          _refreshPosts();
+                          
+                        },
                       ),
                     );
                   },

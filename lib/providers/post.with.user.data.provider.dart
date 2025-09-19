@@ -48,6 +48,7 @@ Future<List<PostWithUsersModel>> getAllPosts() async {
           uid: '',
           profileImage: '',
           isAdmin: false,
+          isVerify: false,
         ),
       );
     }
@@ -87,6 +88,7 @@ Stream<PostWithUsersModel?> getPostDetailsById(String postId) {
         uid: '',
         profileImage: '',
         isAdmin: false,
+        isVerify: false,
       );
     }
 
@@ -129,6 +131,7 @@ Stream<PostWithUsersModel?> getPostDetailsById(String postId) {
       uid: '',
       profileImage: '',
       isAdmin: false,
+      isVerify: false,
     );
   }
 

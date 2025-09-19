@@ -10,10 +10,10 @@ class ImageCard {
   ) {
     return Stack(
       children: [
-        Center(
+        Positioned.fill(
           child: Image.file(
             File(imageUrl),
-            fit: BoxFit.cover,
+            fit: BoxFit.cover,  
           ),
         ),
         Container(

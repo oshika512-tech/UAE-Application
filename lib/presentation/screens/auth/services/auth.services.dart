@@ -12,6 +12,7 @@ class AuthServices {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: emailAddress, password: password);
       if (credential.user != null) {
+         credential.user!.displayName;
         return "Successfully";
       }
     } on FirebaseAuthException catch (e) {
@@ -38,7 +39,7 @@ class AuthServices {
       );
       if (credential.user != null) {
         sendEmailVerification(emailAddress);
-        checkUser(name);
+        checkUserStatus(name,false);
         return 'Successfully';
       }
     } on FirebaseAuthException catch (e) {
@@ -53,7 +54,7 @@ class AuthServices {
     return 'Unknown error occurred.';
   }
 
-  static void checkUser(String name) async {
+  static void checkUserStatus(String name,bool isVerify) async {
     final isUserIdExists = await UserServices()
         .isUserIdExists(FirebaseAuth.instance.currentUser!.uid);
 
@@ -70,9 +71,12 @@ class AuthServices {
                 ? AppData.baseUserUrl
                 : currentUser.photoURL.toString(),
             isAdmin: false,
+            isVerify: isVerify,
           ),
         );
-      } else {}
+      } else {
+        print('User not found');
+      }
     }
   }
 
@@ -131,6 +135,8 @@ class AuthServices {
 
     final data = await FirebaseAuth.instance.signInWithCredential(credential);
     if (data.user != null) {
+      final name =FirebaseAuth.instance.currentUser!.displayName;
+      checkUserStatus(name??"User123",true);
       return true;
     } else {
       return false;

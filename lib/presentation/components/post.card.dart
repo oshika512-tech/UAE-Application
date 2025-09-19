@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/datetime/datetime.calculate.dart';
+import 'package:meditation_center/core/popup/popup.window.dart';
 import 'package:meditation_center/presentation/components/post.card.Components.dart';
 import 'package:meditation_center/presentation/components/post.card.user.info.dart';
 import 'package:meditation_center/core/shimmer/post.shimmer.dart';
@@ -14,11 +15,13 @@ class PostCard extends StatefulWidget {
   final String postID;
   final bool isHome;
   final bool isCUser;
+  final VoidCallback onDelete;
   const PostCard({
     super.key,
     required this.postID,
     required this.isHome,
     required this.isCUser,
+    required this.onDelete,
   });
 
   @override
@@ -33,7 +36,8 @@ class _PostCardState extends State<PostCard>
   int numOfComments = 0;
   final cUser = FirebaseAuth.instance.currentUser!.uid;
 
-  void checkUserLikeStatus(PostProvider postProvider) async {
+  void checkUserLikeStatus() async {
+    final postProvider = Provider.of<PostProvider>(context, listen: false);
     bool status = await postProvider.hasUserLikedPost(widget.postID, cUser);
     if (!mounted) return;
     setState(() {
@@ -41,14 +45,21 @@ class _PostCardState extends State<PostCard>
     });
   }
 
+  // _deletePost() {
+  //   context.pop();
+  //   LoadingPopup.show('Deleting...');
+  //   final postProvider = Provider.of<PostProvider>(context, listen: false);
+  //   postProvider.deletePost(widget.postID);
+  //   EasyLoading.dismiss();
+  // }
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    final postProvider = Provider.of<PostProvider>(context, listen: false);
-    checkUserLikeStatus(postProvider);
+    checkUserLikeStatus();
   }
 
   @override
@@ -105,26 +116,63 @@ class _PostCardState extends State<PostCard>
                           userImage: postData.user.profileImage,
                           time: postData.post.dateTime,
                         )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            mainAxisAlignment: widget.isCUser
-                                ? MainAxisAlignment.spaceBetween
-                                : MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                DatetimeCalculate.timeAgo(
-                                    postData.post.dateTime),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              widget.isCUser
-                                  ? Icon(
-                                      Icons.more_vert_rounded,
-                                      size: 20,
-                                    )
-                                  : SizedBox.shrink(),
-                            ],
-                          ),
+                      : Row(
+                          mainAxisAlignment: widget.isCUser
+                              ? MainAxisAlignment.spaceBetween
+                              : MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              DatetimeCalculate.timeAgo(postData.post.dateTime),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            widget.isCUser
+                                ? PopupMenuButton<int>(
+                                    icon: const Icon(
+                                      Icons.more_vert_outlined,
+                                      color: AppColors.pureBlack,
+                                      size: 25,
+                                    ),
+                                    color: Colors.black87,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    onSelected: (value) async {
+                                      // delete
+                                      PopupWindow.conformImageUploadPopup(
+                                        "Are you sure? This action cannot be undone.",
+                                        "Yes, delete",
+                                        context,
+                                        () {
+                                          // delete
+                                          context.pop();
+                                          widget.onDelete();
+                                        },
+                                        () {
+                                          // cancel
+                                          context.pop();
+                                        },
+                                      );
+                                    },
+                                    itemBuilder: (context) => [
+                                      const PopupMenuItem<int>(
+                                        value: 1,
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.delete,
+                                                color: AppColors.whiteColor),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "Delete post",
+                                              style: TextStyle(
+                                                  color: AppColors.whiteColor),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          ],
                         ),
 
                   const SizedBox(height: 10),
@@ -235,14 +283,15 @@ class _PostCardState extends State<PostCard>
                           () {
                             setState(() {
                               isLiked = !isLiked;
-                              if (isLiked) {
-                                numOfLikes++;
-                                postProvider.likePost(widget.postID, cUser);
-                              } else {
-                                numOfLikes--;
-                                postProvider.dislikePost(widget.postID, cUser);
-                              }
+                              numOfLikes += isLiked ? 1 : -1;
                             });
+
+                            // backend update background  
+                            if (isLiked) {
+                              postProvider.likePost(widget.postID, cUser);
+                            } else {
+                              postProvider.dislikePost(widget.postID, cUser);
+                            }
                           },
                         ),
                         PostCardComponents.actionBtn(

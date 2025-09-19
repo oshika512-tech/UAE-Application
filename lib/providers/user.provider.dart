@@ -8,31 +8,57 @@ import 'package:meditation_center/data/models/user.model.dart';
 
 class UserProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  // update user
-  Future<bool> updateUser(UserModel user) async {
-    final docRef = _firestore.collection('users').doc(
-          FirebaseAuth.instance.currentUser!.uid,
-        );
-
+  // update user profile image
+  Future<bool> updateProfileImage(String uid, String newImageUrl) async {
     try {
-      await docRef.update({...user.toJson()});
-      notifyListeners();
+      await _firestore.collection('users').doc(uid).update({
+        'profileImage': newImageUrl,
+      });
+      print("Profile image updated successfully");
       return true;
     } catch (e) {
-      notifyListeners();
-      print('Error updating task: $e');
+      print("Error updating profile image: $e");
       return false;
     }
   }
+
+  // update user isVerify
+  Future<bool> updateIsVerify(String uid, bool isVerify) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'isVerify': isVerify,
+      });
+      print("isVerify updated");
+      return true;
+    } catch (e) {
+      print("Error updating isVerify: $e");
+      return false;
+    }
+  }
+
+  // is User Verified In Firestore
+  Future<bool> isUserVerifiedInFirestore(String uid) async {
+  try {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+
+    if (!snapshot.exists) return false;
+
+    final data = snapshot.data() as Map<String, dynamic>;
+    return data['isVerify'] as bool? ?? false;
+  } catch (e) {
+    print("Error checking isVerify: $e");
+    return false;
+  }
+}
 
   // get user by id
   Future<UserModel> getUserById(String id) async {
     final snapshot = await _firestore.collection('users').doc(id).get();
     return UserModel.fromJson(snapshot.data()!);
   }
-
- 
-
 
 // cloudinary upload image
   Future<bool> uploadUserProfileImage(
@@ -59,15 +85,8 @@ class UserProvider extends ChangeNotifier {
 
         // update your user model with new image
         final profileImage = response.secureUrl;
-        final updateUserData = await updateUser(
-          UserModel(
-            name: currentUser.name,
-            email: currentUser.email,
-            uid: currentUser.uid,
-            profileImage: profileImage.toString(),
-            isAdmin: false,
-          ),
-        );
+        final updateUserData =
+            await updateProfileImage(userID, profileImage.toString());
 
         if (updateUserData) {
           return true;

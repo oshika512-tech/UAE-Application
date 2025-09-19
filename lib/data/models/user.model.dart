@@ -5,6 +5,7 @@ class UserModel {
   final String uid;
   final String profileImage;
   final bool isAdmin; 
+  final bool isVerify; 
 
   UserModel({
     this.id,
@@ -13,6 +14,7 @@ class UserModel {
     required this.uid,
     required this.profileImage,
     required this.isAdmin,
+    required this.isVerify,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserModel {
       uid: json['uid'] as String,
       profileImage: json['profileImage'] as String,
       isAdmin: json['isAdmin'] as bool,
+      isVerify: json['isVerify'] as bool,
     );
   }
 
@@ -34,6 +37,7 @@ class UserModel {
       'uid': uid,
       'profileImage': profileImage,
       'isAdmin': isAdmin,
+      'isVerify': isVerify,
     };
   }
 }

@@ -38,8 +38,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _refreshPosts() async {
     try {
       LoadingPopup.show("Refreshing posts...");
-      _loadPosts(); // update
-      setState(() {}); // rebuild
+      _loadPosts();
+      setState(() {});
     } catch (e) {
       AppTopSnackbar.showTopSnackBar(context, "Failed to refresh posts");
     } finally {
@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
       child: FutureBuilder<List<PostWithUsersModel>>(
         future: _postsFuture,
         builder: (context, snapshot) {
-          // Error
           if (snapshot.hasError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               EasyLoading.dismiss();
@@ -67,12 +66,8 @@ class _HomePageState extends State<HomePage> {
             );
           }
 
-          // Loading
           if (snapshot.connectionState == ConnectionState.waiting) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              PostShimmer();
-            });
-            return const SizedBox.shrink();
+            return const PostShimmer(); // shimmer directly
           }
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -82,14 +77,13 @@ class _HomePageState extends State<HomePage> {
           final posts = snapshot.data ?? [];
 
           if (posts.isEmpty) {
-            return const EmptyAnimation(title: "No posts yet!");
+            return const Center(child: EmptyAnimation(title: "No posts yet!"));
           }
 
           return ListView.builder(
             controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
             itemCount: posts.length,
-             cacheExtent: 1000, 
+            cacheExtent: 1000,
             itemBuilder: (context, index) {
               final post = posts[index];
               return Container(
@@ -98,9 +92,10 @@ class _HomePageState extends State<HomePage> {
                   color: AppColors.gray.withOpacity(0.1),
                 ),
                 child: PostCard(
-                  isCUser: posts[index].user.uid == cUser,
-                  isHome:true,
+                  isCUser: post.user.uid == cUser,
+                  isHome: true,
                   postID: post.post.id,
+                  onDelete: () {},
                 ),
               );
             },

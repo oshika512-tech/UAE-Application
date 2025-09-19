@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,8 @@ import 'package:meditation_center/presentation/components/app.buttons.dart';
 import 'package:meditation_center/core/alerts/app.top.snackbar.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/presentation/screens/auth/services/auth.services.dart';
+import 'package:meditation_center/providers/user.provider.dart';
+import 'package:provider/provider.dart';
 
 class VerifyScreen extends StatelessWidget {
   const VerifyScreen({super.key});
@@ -13,12 +16,25 @@ class VerifyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    Future<bool> updateStatus(bool isVerify) async {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final check = await userProvider.updateIsVerify(uid, isVerify);
+      if (check) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     void verify() async {
-      
-          LoadingPopup.show('Verifying...');
+      LoadingPopup.show('Verifying...');
 
       final result = await AuthServices.isEmailVerified();
-      if (result) {
+
+      final updateResult = await updateStatus(result);
+
+      if (updateResult) {
         context.go('/main');
         EasyLoading.dismiss();
         EasyLoading.showSuccess('Verified !', duration: Duration(seconds: 2));

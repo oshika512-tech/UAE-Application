@@ -31,12 +31,21 @@ class _UploadPageState extends State<UploadPage> {
 
   // pick multiple images from gallery
   Future<void> _pickImagesFromGallery() async {
-    final List<XFile> pickedFiles = await picker.pickMultiImage();
+    if (!isEnabled) return;
+    setState(() => isEnabled = false);
 
-    if (pickedFiles.isNotEmpty) {
-      setState(() {
-        imageList.addAll(pickedFiles);
-      });
+    try {
+      final List<XFile> pickedFiles = await picker.pickMultiImage();
+
+      if (pickedFiles.isNotEmpty) {
+        setState(() {
+          imageList.addAll(pickedFiles);
+        });
+      }
+    } catch (e) {
+      print("Error picking images: $e");
+    } finally {
+      setState(() => isEnabled = true);
     }
   }
 
@@ -50,7 +59,7 @@ class _UploadPageState extends State<UploadPage> {
       final postProvider = Provider.of<PostProvider>(context, listen: false);
       final notificationProvider =
           Provider.of<NotificationProvider>(context, listen: false);
-      // LoadingPopup.show('Uploading...');
+
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -136,7 +145,11 @@ class _UploadPageState extends State<UploadPage> {
                         icon: Icons.image,
                         width: MediaQuery.of(context).size.width * 0.44,
                         height: 50,
-                        onTap: _pickImagesFromGallery,
+                        onTap: () {
+                          if (isEnabled) {
+                            _pickImagesFromGallery();
+                          }
+                        },
                       ),
                       AppButtons(
                         text: "Upload",
