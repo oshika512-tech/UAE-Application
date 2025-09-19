@@ -6,7 +6,6 @@ import 'package:meditation_center/core/notifications/local.notification.dart';
 import 'package:meditation_center/data/firebase/firebase_options.dart';
 import 'package:meditation_center/core/routing/app.routing.dart';
 import 'package:meditation_center/core/theme/app.theme.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:meditation_center/data/services/animation.services.dart';
 import 'package:meditation_center/providers/comment.provider.dart';
 import 'package:meditation_center/providers/notice.provider.dart';
@@ -33,25 +32,23 @@ void main() async {
   final int animationDuration =
       await AnimationServices().getAnimationDuration();
 
-  runApp(
-    DevicePreview(
-      enabled: false,
-      builder: (context) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => PostProvider()),
-          ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
-          ChangeNotifierProvider(create: (_) => NotificationProvider()),
-          ChangeNotifierProvider(create: (_) => CommentProvider()),
-          ChangeNotifierProvider(create: (_) => NoticeProvider()),
-        ],
-        child: MyApp(
-          isUserVerified: isUserVerified,
-          animationDuration: animationDuration,
-        ),
-      ),
+runApp(
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => PostProvider()),
+      ChangeNotifierProvider(create: (_) => PostWithUserDataProvider()),
+      ChangeNotifierProvider(create: (_) => NotificationProvider()),
+      ChangeNotifierProvider(create: (_) => CommentProvider()),
+      ChangeNotifierProvider(create: (_) => NoticeProvider()),
+    ],
+    child: MyApp(
+      isUserVerified: isUserVerified,
+      animationDuration: animationDuration,
     ),
-  );
+  ),
+);
+
 }
 
 class MyApp extends StatelessWidget {
