@@ -33,7 +33,7 @@ class PostModel {
       userName: json['userName'] as String,
       dateTime: (json['dateTime'] as dynamic) is DateTime
           ? json['dateTime'] as DateTime
-          : (json['dateTime'] as Timestamp).toDate(), 
+          : (json['dateTime'] as Timestamp).toDate(),
       images: List<String>.from(json['images'] ?? []),
       likes: json['likes'] as int? ?? 0,
       comments: json['comments'] as int? ?? 0,

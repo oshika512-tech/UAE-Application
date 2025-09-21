@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/data/services/permission.services.dart';
-import 'package:meditation_center/presentation/pages/booking/booking.page.dart';
+import 'package:meditation_center/presentation/pages/item%20menus/item.menu.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
 import 'package:meditation_center/presentation/pages/notice/page/notice.page.dart';
 import 'package:meditation_center/presentation/pages/notification/notification.page.dart';
@@ -101,7 +101,7 @@ class _MainScreenState extends State<MainScreen> {
                 UploadPage(),
 
                 // BookingPage
-                BookingPage(),
+                ItemMenuPage(),
 
                 // NotificationPage
                 NotificationPage(),
