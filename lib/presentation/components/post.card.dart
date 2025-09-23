@@ -138,7 +138,7 @@ class _PostCardState extends State<PostCard>
                                     ),
                                     onSelected: (value) async {
                                       // delete
-                                      PopupWindow.conformImageUploadPopup(
+                                      PopupWindow.showPopupWindow(
                                         "Are you sure? This action cannot be undone.",
                                         "Yes, delete",
                                         context,

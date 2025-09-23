@@ -108,7 +108,7 @@ class _NoticeViewerState extends State<NoticeViewer> {
                 onPressed: () {
                   if (userData.isAdmin) {
                     // show conform window
-                    PopupWindow.conformImageUploadPopup(
+                    PopupWindow.showPopupWindow(
                       "Conform to delete this  notice, this action cannot be undone",
                       "Yes, add notice",
                       context,

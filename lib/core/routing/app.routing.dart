@@ -8,6 +8,7 @@ import 'package:meditation_center/presentation/pages/comments/comment.page.dart'
 import 'package:meditation_center/presentation/pages/help%20and%20supports/help.and.support.dart';
 import 'package:meditation_center/presentation/pages/notice/notice%20viewer/notice.viewer.dart';
 import 'package:meditation_center/presentation/pages/home/post%20viewer/post.viewer.dart';
+import 'package:meditation_center/presentation/pages/social%20media/social.media.page.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/create.screen.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/forgot.password.dart';
 import 'package:meditation_center/presentation/screens/auth/screens/login.screen.dart';
@@ -30,7 +31,6 @@ class AppRouting {
       initialLocation: FirebaseAuth.instance.currentUser != null
           ? (isVerify ? '/main' : '/verify')
           : '/',
-
 
       // initialLocation: '/profile',
       routes: [
@@ -145,7 +145,17 @@ class AppRouting {
           name: "noticeViewer",
           builder: (context, state) {
             final noticeID = state.extra as String;
-            return NoticeViewer(noticeID: noticeID,);
+            return NoticeViewer(
+              noticeID: noticeID,
+            );
+          },
+        ),
+        // no - animation
+        GoRoute(
+          path: "/socialMedia",
+          name: "socialMedia",
+          builder: (context, state) {
+            return SocialMediaPage();
           },
         ),
       ],

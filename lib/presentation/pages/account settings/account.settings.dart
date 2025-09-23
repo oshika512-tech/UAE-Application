@@ -38,7 +38,7 @@ class _AccountSettingsState extends State<AccountSettings> {
 
 // conform uploading
   conform(XFile imagePath) {
-    return PopupWindow.conformImageUploadPopup(
+    return PopupWindow.showPopupWindow(
       "Conform to upload image",
       "Yes, Upload",
       context,

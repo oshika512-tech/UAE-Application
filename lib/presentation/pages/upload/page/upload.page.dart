@@ -54,7 +54,7 @@ class _UploadPageState extends State<UploadPage> {
     String userName,
     List<XFile> images,
   ) {
-    PopupWindow.conformImageUploadPopup(text, "Yes, Upload", context, () async {
+    PopupWindow.showPopupWindow(text, "Yes, Upload", context, () async {
       context.pop();
       final postProvider = Provider.of<PostProvider>(context, listen: false);
       final notificationProvider =

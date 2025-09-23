@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meditation_center/core/theme/app.colors.dart';
 
 class PopupWindow {
-  static void conformImageUploadPopup(
+  static void showPopupWindow(
     String title,
     String buttonText,
     BuildContext context,

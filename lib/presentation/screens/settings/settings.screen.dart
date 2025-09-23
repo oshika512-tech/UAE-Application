@@ -143,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   "Logout",
                                   "Sign out of your account",
                                   () {
-                                    PopupWindow.conformImageUploadPopup(
+                                    PopupWindow.showPopupWindow(
                                       "This action cannot be undone\nAre you sure you want to continue?",
                                       "Yes, Logout",
                                       context,

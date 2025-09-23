@@ -93,7 +93,7 @@ class _AddNoticeState extends State<AddNotice> {
                     _bodyController.text.isNotEmpty &&
                     imageFile != null) {
                   // show conform window
-                  PopupWindow.conformImageUploadPopup(
+                  PopupWindow.showPopupWindow(
                     "Conform to create notice, this action cannot be undone",
                     "Yes, add notice",
                     context,

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:go_router/go_router.dart';
+import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/constance/app.constance.dart';
+import 'package:meditation_center/core/theme/app.colors.dart';
 import 'package:meditation_center/presentation/components/booking.card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,6 +12,7 @@ class ItemMenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final List menuItems = [
       "මාසික සමාජිකත්වය ලබා ගැනීම සඳහා",
       "දානමය පිංකම් භාරගැනීම සඳහා",
@@ -20,14 +25,109 @@ class ItemMenuPage extends StatelessWidget {
       "⁠අප හා සම්බන්ධ වීමට",
     ];
 
-    Future<void> _launchUrl(
-      String number,
-      String text,
-    ) async {
-      final Uri url = Uri.parse('https://wa.me/$number/?text=තෙරුවන්සරණයි !\n$text');
-      if (!await launchUrl(url)) {
+    Future<void> launchWhatsapp(String number, String text) async {
+      final Uri url =
+          Uri.parse('https://wa.me/$number/?text=තෙරුවන් සරණයි !\n$text');
+
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      )) {
         throw Exception('Could not launch $url');
       }
+    }
+
+    Future<void> whatsappGroup() async {
+      final Uri url = Uri.parse(AppData.whatsAppGroup);
+
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      )) {
+        throw Exception('Could not launch $url');
+      }
+    }
+
+    Future<void> launchPhone(String phoneNumber) async {
+      final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,  
+      )) {
+        throw 'Could not launch $url';
+      }
+    }
+
+    void contactUS() {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+               
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  "Contact Us",
+                  style: theme.textTheme.bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "+97 155 332 2301",
+                  style: theme.textTheme.bodySmall ,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        (context).pop();
+                      },
+                      child: Text(
+                        "No, Later",
+                        style: theme.textTheme.bodySmall!.copyWith(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 20,
+                      color: AppColors.gray,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        launchPhone(AppData.contactNumber);
+                      },
+                      child: Row(
+                        children: [
+                          Text("Call Now", style: theme.textTheme.bodySmall),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.call_made_rounded,
+                            color: AppColors.gray,
+                            size: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      );
     }
 
     return Padding(
@@ -50,21 +150,28 @@ class ItemMenuPage extends StatelessWidget {
 
                       case "⁠whatsapp එකමුතුවට සම්බන්ධ වීම සඳහා":
                         // whatsapp group link
+                        LoadingPopup.show('Logging...');
+                        whatsappGroup();
+                        EasyLoading.dismiss();
                         break;
 
                       case "⁠අප සන්නිවේදන ජාලය":
                         // social media page
+                        context.push('/socialMedia');
                         break;
 
                       case "⁠අප හා සම්බන්ධ වීමට":
+                        contactUS();
                         // contact detail page
                         break;
 
                       default:
-                        _launchUrl(
+                        LoadingPopup.show('Logging...');
+                        launchWhatsapp(
                           AppData.whatsAppNumber,
                           menuItems[index],
                         );
+                        EasyLoading.dismiss();
                     }
                   },
                   child: BookingCard(
