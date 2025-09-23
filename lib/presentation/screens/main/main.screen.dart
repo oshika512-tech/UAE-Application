@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/constance/app.constance.dart';
+import 'package:meditation_center/core/notifications/local.notification.dart';
 import 'package:meditation_center/data/services/permission.services.dart';
 import 'package:meditation_center/data/services/update.services.dart';
 import 'package:meditation_center/presentation/components/update.banner.dart';
@@ -41,13 +43,55 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  void subscribeToAllUserTopic() {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    messaging.subscribeToTopic('all_users');
+  }
+
+  void listeners() {
+    // 🔹 Foreground state
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final cUser = FirebaseAuth.instance.currentUser;
+
+      final notificationUserId = message.data['user_id'];
+      final postId = message.data['post_id'];
+
+      if (cUser != null && cUser.uid != notificationUserId) {
+        LocalNotification().showNotification(
+          int.tryParse(postId) ?? 0,
+          message.notification?.title ?? "No Title",
+          message.notification?.body ?? "No Body",
+        );
+      } else {
+        print("👋 Notification is from current user");
+      }
+    });
+
+    // 🔹 Terminated state
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        print("📩 App opened from terminated by notification: ${message.data}");
+      }
+    });
+    // background state
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("📩 App opened from background by notification: ${message.data}");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     // validate User
     validateUser();
+    // check update 
     checkUpdate();
+    // request permissions
     PermissionServices.requestPermissions();
+    // subscribe to all users topic
+    subscribeToAllUserTopic();
+    // setup  listeners
+    listeners();
   }
 
   @override

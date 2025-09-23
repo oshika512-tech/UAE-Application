@@ -61,7 +61,7 @@ class SocialMediaPage extends StatelessWidget {
                 AppColors.whatsappColor,
                 () async {
                   final number =AppData.whatsAppNumber;
-                  final Uri url = Uri.parse('https://wa.me/$number');;
+                  final Uri url = Uri.parse('https://wa.me/$number');
 
                   if (!await launchUrl(
                     url,

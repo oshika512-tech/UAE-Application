@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meditation_center/core/alerts/loading.popup.dart';
 import 'package:meditation_center/core/constance/app.constance.dart';
@@ -70,24 +71,44 @@ class ItemMenuPage extends StatelessWidget {
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-               
+              //  crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                Text(
-                  "Contact Us",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "+97 155 332 2301",
-                  style: theme.textTheme.bodySmall ,
-                  textAlign: TextAlign.center,
+                  const SizedBox(height: 20),
+                  Text(
+                    "Reach Us by Phone",
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                Container(
+                   
+                  decoration: BoxDecoration(
+                    color: AppColors.pureBlack,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(FontAwesomeIcons.phone, color: Colors.white, size: 16),
+                        const SizedBox(width: 10),
+                        Text(
+                          "+97 155 332 2301",
+                          style: theme.textTheme.bodySmall !.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
                       onPressed: () {

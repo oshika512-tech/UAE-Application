@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meditation_center/core/notifications/local.notification.dart';
+import 'package:meditation_center/core/notifications/send.push.notification.dart';
 import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/post.model.dart';
 
@@ -61,6 +62,14 @@ class PostProvider extends ChangeNotifier {
         docRef.id.hashCode,
         "Successfully uploaded",
         "Your post has been uploaded successfully\n $des",
+      );
+      SendPushNotification.sendNotificationUsingApi(
+        title: "New Post Uploaded",
+        body: "$name uploaded a new post",
+        data: {
+          "post_id": docRef.id,
+          "user_id": userId,
+        },
       );
       notifyListeners();
 
@@ -213,34 +222,33 @@ class PostProvider extends ChangeNotifier {
 
   // delete post
   Future<bool> deletePost(String postId) async {
-  try {
-    final postRef = _firestore.collection('posts').doc(postId);
-    final snapshot = await postRef.get();
+    try {
+      final postRef = _firestore.collection('posts').doc(postId);
+      final snapshot = await postRef.get();
 
-    if (!snapshot.exists) return false;
+      if (!snapshot.exists) return false;
 
-    final data = snapshot.data() as Map<String, dynamic>;
-    final comments = List<String>.from(data['comments_id'] ?? []);
+      final data = snapshot.data() as Map<String, dynamic>;
+      final comments = List<String>.from(data['comments_id'] ?? []);
 
-    WriteBatch batch = _firestore.batch();
+      WriteBatch batch = _firestore.batch();
 
-    // delete all comments
-    for (var commentId in comments) {
-      final commentRef = _firestore.collection('comment').doc(commentId);
-      batch.delete(commentRef);
+      // delete all comments
+      for (var commentId in comments) {
+        final commentRef = _firestore.collection('comment').doc(commentId);
+        batch.delete(commentRef);
+      }
+
+      // delete post itself
+      batch.delete(postRef);
+
+      // commit batch
+      await batch.commit();
+
+      return true;
+    } catch (e) {
+      print("Error deleting post = $e");
+      return false;
     }
-
-    // delete post itself
-    batch.delete(postRef);
-
-    // commit batch
-    await batch.commit();
-
-    return true;
-  } catch (e) {
-    print("Error deleting post = $e");
-    return false;
   }
-}
-
 }
