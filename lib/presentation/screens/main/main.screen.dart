@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meditation_center/core/constance/app.constance.dart';
 import 'package:meditation_center/data/services/permission.services.dart';
+import 'package:meditation_center/data/services/update.services.dart';
+import 'package:meditation_center/presentation/components/update.banner.dart';
 import 'package:meditation_center/presentation/pages/item%20menus/item.menu.page.dart';
 import 'package:meditation_center/presentation/pages/home/home.page.dart';
 import 'package:meditation_center/presentation/pages/notice/page/notice.page.dart';
@@ -25,11 +28,25 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  Future<void> checkUpdate() async {
+    final update = await UpdateServices().getAppUpdate();
+
+    print("App Version: ${update.appVersion}");
+    final currentV = AppData.appVersion;
+    if (update.appVersion > currentV) {
+      print("Update Available");
+      UpdateBanner.showUpdateBanner(context, () {
+        UpdateServices().launchURL(update.appLink);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     // validate User
     validateUser();
+    checkUpdate();
     PermissionServices.requestPermissions();
   }
 

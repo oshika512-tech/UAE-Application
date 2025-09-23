@@ -158,7 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 Spacer(),
                                 Text(
-                                  AppData.appVersion,
+                                  "v ${AppData.appVersion}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
