@@ -64,8 +64,8 @@ class PostProvider extends ChangeNotifier {
         "Your post has been uploaded successfully\n $des",
       );
       SendPushNotification.sendNotificationUsingApi(
-        title: "New Post Uploaded",
-        body: "$name uploaded a new post",
+        title: "Post Alert",
+        body: "'$name' uploaded a new post",
         data: {
           "post_id": docRef.id,
           "user_id": userId,

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meditation_center/core/notifications/send.push.notification.dart';
 import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/notice.model.dart';
 
@@ -14,6 +16,7 @@ class NoticeProvider extends ChangeNotifier {
     String body,
     XFile imagePath,
   ) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     final docRef = _firestore.collection('notice').doc();
 
     final notice = NoticeModel(
@@ -54,6 +57,15 @@ class NoticeProvider extends ChangeNotifier {
 
         // create dummy notice
         await docRef.update({...updateNotice.toJson()});
+        SendPushNotification.sendNotificationUsingApi(
+          title: "Notice Alert",
+          body: "You have a new notice. Check it out!",
+          data: {
+            "post_id": docRef.id,
+            "user_id": userId,
+            "notice_id": docRef.id,
+          },
+        );
         notifyListeners();
       } else {
         notifyListeners();
