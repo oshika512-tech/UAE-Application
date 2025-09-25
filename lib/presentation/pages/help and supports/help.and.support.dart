@@ -133,6 +133,8 @@ class HelpAndSupport extends StatelessWidget {
                 color: AppColors.whiteColor,
               ),
         ),
+        iconColor: AppColors.whiteColor,
+        collapsedIconColor: AppColors.whiteColor,
         children: [
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -144,8 +146,6 @@ class HelpAndSupport extends StatelessWidget {
             ),
           ),
         ],
-        iconColor: AppColors.whiteColor,
-        collapsedIconColor: AppColors.whiteColor,
       ),
     );
   }
