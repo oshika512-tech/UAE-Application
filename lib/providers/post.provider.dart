@@ -7,6 +7,7 @@ import 'package:meditation_center/core/notifications/local.notification.dart';
 import 'package:meditation_center/core/notifications/send.push.notification.dart';
 import 'package:meditation_center/data/cloudinary/cloudinary_api.dart';
 import 'package:meditation_center/data/models/post.model.dart';
+import 'package:meditation_center/data/services/posts.delete.services.dart';
 
 class PostProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -244,11 +245,26 @@ class PostProvider extends ChangeNotifier {
 
       // commit batch
       await batch.commit();
+      await deleteFromCloudinary(postId);
 
       return true;
     } catch (e) {
       print("Error deleting post = $e");
       return false;
+    }
+  }
+
+  Future<void> deleteFromCloudinary(String postsID) async {
+    try {
+      final delImages = await PostsDeleteServices.deleteFolderAssets(postsID);
+      if (delImages) {
+        final delFolder = await PostsDeleteServices.deleteEmptyFolder(postsID);
+        if (delFolder) {
+          debugPrint("Successfully deleted Cloudinary folder posts/$postsID");
+        }
+      }
+    } catch (e) {
+      debugPrint("Failed to delete Cloudinary folder posts/$postsID: $e");
     }
   }
 }
